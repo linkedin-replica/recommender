@@ -9,12 +9,6 @@ import java.util.ArrayList;
 public interface DatabaseHandler {
 
     /**
-     * Initiate a connection with the database
-     */
-    void connect();
-
-
-    /**
      * Get the recommended users for a specific user
      *
      * @param userId: the user seeking friend recommendations
@@ -40,9 +34,4 @@ public interface DatabaseHandler {
      */
     ArrayList<Article> getTrendingArticles(int userId);
 
-
-    /**
-     * Close a connection with the database
-     */
-    void disconnect();
 }

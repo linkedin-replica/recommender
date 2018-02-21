@@ -1,17 +1,31 @@
 package database;
 
+import com.arangodb.ArangoCollection;
+import com.arangodb.ArangoDB;
+import com.arangodb.ArangoDatabase;
 import models.Article;
 import models.JobListing;
 import models.User;
+import utils.ConfigReader;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class ArangoHandler implements DatabaseHandler {
-    /**
-     * Initiate a connection with the database
-     */
-    public void connect() {
+    private ConfigReader config;
+    private ArangoDatabase dbInstance;
+    private ArangoCollection collection;
+    private String collectionName;
 
+    public ArangoHandler() throws IOException {
+        // read arango constants
+        config = new ConfigReader("arango_names");
+
+        // init db
+        ArangoDB arangoDriver = DatabaseConnection.getDBConnection().getArangoDriver();
+        collectionName = config.getConfig("collection.recommendations.name");
+        dbInstance = arangoDriver.db(config.getConfig("db.name"));
+        collection = dbInstance.collection(collectionName);
     }
 
     /**
