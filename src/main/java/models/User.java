@@ -2,21 +2,16 @@ package models;
 
 public class User {
 
-    private int userId;
+    private String userId;
     private String firstName;
     private String lastName;
     private String headline;
     private String industry;
 
-    public User(int userId, String firstName, String lastName, String headline, String industry) {
-        this.userId = userId;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.headline = headline;
-        this.industry = industry;
+    public User() {
     }
 
-    public int getUserId() {
+    public String getUserId() {
         return userId;
     }
 
