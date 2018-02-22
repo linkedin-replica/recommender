@@ -14,6 +14,5 @@ public class ConfigReader {
     }
 
     public String getConfig(String key) {
-        return properties.getProperty(key);
-    }
+        return properties.getProperty(key); }
 }

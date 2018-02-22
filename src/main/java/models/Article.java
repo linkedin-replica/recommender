@@ -16,6 +16,7 @@ public class Article {
         this.postId = postId;
         this.authorFirstName = authorFirstName;
         this.authorLastName = authorLastName;
+        this.title = title;
         this.miniText = miniText;
         this.peopleTalking = peopleTalking;
     }
