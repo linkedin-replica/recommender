@@ -1,14 +1,15 @@
 package models;
 
-public class User {
+public class User implements Comparable<User> {
 
-    private int userId;
+    private int mutualCount;
+    private String userId;
     private String firstName;
     private String lastName;
     private String headline;
     private String industry;
 
-    public User(int userId, String firstName, String lastName, String headline, String industry) {
+    public User(String userId, String firstName, String lastName, String headline, String industry) {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -16,24 +17,33 @@ public class User {
         this.industry = industry;
     }
 
-    public int getUserId() {
-        return userId;
+    public String getUserId() {
+        return this.userId;
     }
 
     public String getFirstName() {
-        return firstName;
+        return this.firstName;
     }
 
     public String getLastName() {
-        return lastName;
+        return this.lastName;
     }
 
     public String getHeadline() {
-        return headline;
+        return this.headline;
     }
 
     public String getIndustry() {
-        return industry;
+        return this.industry;
     }
 
+    public void setMutualCount(int mutualCount) {
+        this.mutualCount = mutualCount;
+    }
+
+    public int compareTo(User other) {
+        if (this.mutualCount != other.mutualCount)
+            return this.userId.compareTo(other.userId);
+        return other.mutualCount - this.mutualCount;
+    }
 }

@@ -34,7 +34,7 @@ public class ArangoHandler implements DatabaseHandler {
      * @param userId : the user seeking friend recommendations
      * @return list of recommended users
      */
-    public ArrayList<User> getRecommendedUsers(int userId) {
+    public ArrayList<User> getFriendsOfUser(String userId) {
         return null;
     }
 
