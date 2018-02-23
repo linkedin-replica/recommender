@@ -2,6 +2,7 @@ package recommender;
 
 import models.Command;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -16,7 +17,7 @@ public class RecommendJobListingCommand extends Command {
     }
 
     @Override
-    public LinkedHashMap<String, Object> execute() {
+    public LinkedHashMap<String, Object> execute() throws IOException {
 
         LinkedHashMap<String, Object> results = new LinkedHashMap<>();
         // call dbHandler to get recommendedJobs and return results in the results map as key-value pair
