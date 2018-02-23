@@ -3,6 +3,7 @@ package database;
 import com.arangodb.ArangoDB;
 import com.arangodb.ArangoDBException;
 import com.arangodb.entity.BaseDocument;
+import models.Article;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -103,11 +104,10 @@ public class DatabaseSeed {
                 throw exception;
             }
         }
-        int id = 0;
         BaseDocument articleDocument;
-        JSONArray jobs = getJSONData("src/main/resources/data/articles.json");
-        for (Object job : jobs) {
-            JSONObject articleObject = (JSONObject) job;
+        JSONArray articles = getJSONData("src/main/resources/data/articles.json");
+        for (Object article : articles) {
+            JSONObject articleObject = (JSONObject) article;
             articleDocument = new BaseDocument();
             articleDocument.addAttribute("postId", articleObject.get("postId"));
             articleDocument.addAttribute("authorId", articleObject.get("authorId"));
