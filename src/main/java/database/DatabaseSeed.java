@@ -89,7 +89,8 @@ public class DatabaseSeed {
         String collectionName = config.getConfig("collection.jobs.name");
 
         try{
-            arangoDB.db(dbName).createCollection(collectionName);
+            arangoDB.db(dbName).
+                    createCollection(collectionName);
 
         }catch(ArangoDBException exception){
             //database not found exception

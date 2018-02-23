@@ -55,6 +55,7 @@ public class ArangoHandler implements DatabaseHandler {
      * @return list of trending articles
      */
     public ArrayList<Article> getTrendingArticles(int userId) {
+
         return null;
     }
 
