@@ -18,10 +18,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class ArangoHandler implements DatabaseHandler {
-    private ConfigReader config;
+    private static ConfigReader config;
     private ArangoDatabase dbInstance;
-    private ArangoCollection collection;
-    private String collectionName;
 
     public ArangoHandler() throws IOException {
         // read arango constants
@@ -29,9 +27,7 @@ public class ArangoHandler implements DatabaseHandler {
 
         // init db
         ArangoDB arangoDriver = DatabaseConnection.getDBConnection().getArangoDriver();
-        collectionName = config.getConfig("collection.recommendations.name");
         dbInstance = arangoDriver.db(config.getConfig("db.name"));
-        collection = dbInstance.collection(collectionName);
     }
 
     /**
@@ -50,25 +46,33 @@ public class ArangoHandler implements DatabaseHandler {
      * @param userId : the user seeking job listing recommendations
      * @return list of recommended job listings
      */
-    public ArrayList<JobListing> getRecommendedJobListing(String userId) {
-        String jobCollectionName = config.getConfig("collection.job.name");
-        String userCollectionName = config.getConfig("collection.user.name");
-        BaseDocument document = dbInstance.collection(userCollectionName).getDocument(userId, BaseDocument.class);
-        String [] userSkills = (String []) document.getAttribute("skill");
+    public ArrayList<JobListing> getRecommendedJobListing(String userId) throws IOException {
 
+        ArangoCursor<VPackSlice> userCursor = ArangoHandler.getUserById(userId);
+        VPackSlice userSkills = userCursor.next().get("skills");
         //query for getting jobListing if there is a match between this jobListing and requesting user's skills
-        String query = "FOR job IN %s FILTER "
-                + "@skills ANY IN job.requiredSkills "
+        String query = "FOR job IN jobs FILTER "
+                + "COUNT(INTERSECTION(@userSkills, job.requiredSkills)) != 0 "
                 + "RETURN job";
         //bind variables
-        Map<String, Object> bindVars = new MapBuilder().put("skills", userSkills).get();
+        Map<String, Object> bindVars = new MapBuilder().put("userSkills", userSkills).get();
 
         //execute query
         ArangoCursor<JobListing> cursor = dbInstance.query(query, bindVars,null, JobListing.class);
-
         final ArrayList<JobListing> returnedResults = new ArrayList<>();
         cursor.forEachRemaining(returnedResults::add);
         return returnedResults;
+    }
+
+    public static ArangoCursor<VPackSlice> getUserById(String userId) throws IOException {
+        String dbName = config.getConfig("db.name");
+        String userCollectionName = config.getConfig("collection.users.name");
+        String query = "FOR u IN users FILTER "
+                + "u.userId == @userId "
+                + "RETURN u";
+        Map<String, Object> bindVars = new MapBuilder().put("userId", userId).get();
+        ArangoDatabase db = DatabaseConnection.getDBConnection().getArangoDriver().db(dbName);
+        return db.query(query, bindVars, null, VPackSlice.class);
     }
 
     /**
@@ -85,6 +89,6 @@ public class ArangoHandler implements DatabaseHandler {
      * Close a connection with the database
      */
     public void disconnect() {
-
+        //TODO
     }
 }
