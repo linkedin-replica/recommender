@@ -2,37 +2,33 @@
   {
     "postId": "0",
     "authorId": "1",
-    "title": "El 7ob fy Zaman el kolera",
-    "authorFirstName": "7amdy",
-    "authorLastName": "El Wazeer",
-    "miniText": "El kolera kanet w7sha awy awy",
-    "peopleTalking": 500
+    "headline": "El 7ob fy Zaman el kolera",
+    "likesCount":500,
+    "commentsCount": 30,
+    "shares": ["5", "3", "1", "8"]
   },
   {
     "postId": "1",
     "authorId": "6",
-    "title": "Madinat el baha2em",
-    "authorFirstName": "Mar3y",
-    "authorLastName": "Bta3 el kelema",
-    "miniText": "Behema Beheema Beheema",
-    "peopleTalking": 800
+    "headline": "Madinat el baha2em",
+    "likesCount":200,
+    "commentsCount": 30,
+    "shares": ["5", "3", "1", "8"]
   },
   {
     "postId": "2",
     "authorId": "5",
-    "title": "La Totfe2 el Shams",
-    "authorFirstName": "Mohamed",
-    "authorLastName": "Ramadan",
-    "miniText": "Ew3a totfe2ha laz3al mennak",
-    "peopleTalking": 10000
+    "headline": "La Totfe2 el Shams",
+    "likesCount":50,
+    "commentsCount": 3,
+    "shares": ["5", "3", "1", "8"]
   },
   {
     "postId": "3",
     "authorId": "1",
-    "title": "Eskendrya Leeh",
-    "authorFirstName": "Youssef",
-    "authorLastName": "Shaheen",
-    "miniText": "La wllahy mesh 3aref leeh",
-    "peopleTalking": 6000
+    "headline": "Eskendrya Leeh",
+    "likesCount":10,
+    "commentsCount": 1,
+    "shares": ["5", "3", "1", "8"]
   }
 ]

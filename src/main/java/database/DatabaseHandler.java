@@ -4,6 +4,7 @@ import models.JobListing;
 import models.Article;
 import models.User;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public interface DatabaseHandler {
@@ -23,7 +24,7 @@ public interface DatabaseHandler {
      * @param userId: the user seeking job listing recommendations
      * @return list of recommended job listings
      */
-    ArrayList<JobListing> getRecommendedJobListing(int userId);
+    ArrayList<JobListing> getRecommendedJobListing(String userId) throws IOException;
 
 
     /**

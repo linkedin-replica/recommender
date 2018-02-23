@@ -42,10 +42,10 @@ public class DatabaseSeed {
      * @throws ParseException
      */
     public static void insertUsers() throws IOException, ParseException {
+
         ArangoDB arangoDB = DatabaseConnection.getDBConnection().getArangoDriver();
         String dbName = config.getConfig("db.name");
         String collectionName = config.getConfig("collection.users.name");
-
         try {
             arangoDB.db(dbName).createCollection(collectionName);
         } catch(ArangoDBException exception) {
@@ -111,11 +111,10 @@ public class DatabaseSeed {
             articleDocument = new BaseDocument();
             articleDocument.addAttribute("postId", articleObject.get("postId"));
             articleDocument.addAttribute("authorId", articleObject.get("authorId"));
-            articleDocument.addAttribute("title", articleObject.get("title"));
-            articleDocument.addAttribute("authorFirstName", articleObject.get("authorFirstName"));
-            articleDocument.addAttribute("authorLastName", articleObject.get("authorLastName"));
-            articleDocument.addAttribute("miniText", articleObject.get("miniText"));
-            articleDocument.addAttribute("peopleTalking", articleObject.get("peopleTalking"));
+            articleDocument.addAttribute("headline", articleObject.get("headline"));
+            articleDocument.addAttribute("likesCount", articleObject.get("likesCount"));
+            articleDocument.addAttribute("commentsCount", articleObject.get("commentsCount"));
+            articleDocument.addAttribute("shares", articleObject.get("shares"));
             arangoDB.db(dbName).collection(collectionName).insertDocument(articleDocument);
             System.out.println("New article document insert with key = " + articleDocument.getId());
         }
@@ -133,7 +132,6 @@ public class DatabaseSeed {
         ArangoDB arangoDB = DatabaseConnection.getDBConnection().getArangoDriver();
         String dbName = config.getConfig("db.name");
         String collectionName = config.getConfig("collection.jobs.name");
-
         try{
             arangoDB.db(dbName).
                     createCollection(collectionName);
@@ -155,7 +153,8 @@ public class DatabaseSeed {
         for (Object job : jobs) {
             JSONObject jobObject = (JSONObject) job;
             jobDocument = new BaseDocument();
-            jobDocument.addAttribute("JobID", id++);
+
+//            jobDocument.addAttribute("JobID", id++);
             jobDocument.addAttribute("positionName", jobObject.get("positionName"));
             jobDocument.addAttribute("companyName", jobObject.get("companyName"));
             jobDocument.addAttribute("companyId", jobObject.get("companyId"));
@@ -187,6 +186,27 @@ public class DatabaseSeed {
     }
 
     /**
+     * Delete users collection from the database if it exists
+     * @throws ArangoDBException
+     * @throws FileNotFoundException
+     * @throws ClassNotFoundException
+     * @throws IOException
+     * @throws SQLException
+     */
+    public static void deleteAllUsers() throws ArangoDBException, IOException{
+        String dbName = config.getConfig("db.name");
+        String collectionName = config.getConfig("collection.users.name");
+        try {
+            DatabaseConnection.getDBConnection().getArangoDriver().db(dbName).collection(collectionName).drop();
+        } catch(ArangoDBException exception) {
+            if(exception.getErrorNum() == 1228) {
+                System.out.println("Database not found");
+            }
+        }
+        System.out.println("Jobs collection is dropped");
+    }
+
+    /**
      * Drop specified database from Arango Driver
      * @param dbName Database name to be dropped
      * @throws IOException
@@ -211,4 +231,6 @@ public class DatabaseSeed {
 
         DatabaseConnection.getDBConnection().getArangoDriver().shutdown();
     }
+
+
 }
