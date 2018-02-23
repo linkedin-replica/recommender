@@ -6,14 +6,9 @@ public class JobListing {
     private String companyName;
     private String companyID;
     private String companyProfilePictureURL;
+    private String [] requiredSkills;
 
-    public JobListing(int jobID, String positionName, String companyName, String companyID, String companyProfilePictureURL) {
-        this.jobID = jobID;
-        this.positionName = positionName;
-        this.companyName = companyName;
-        this.companyID = companyID;
-        this.companyProfilePictureURL = companyProfilePictureURL;
-    }
+    public JobListing() {}
 
     public int getJobID() {
         return jobID;
@@ -34,4 +29,6 @@ public class JobListing {
     public String getCompanyProfilePictureURL() {
         return companyProfilePictureURL;
     }
+
+    public String[] getRequiredSkills() { return requiredSkills; }
 }

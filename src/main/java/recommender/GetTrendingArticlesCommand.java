@@ -3,6 +3,7 @@ package recommender;
 import models.Command;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class GetTrendingArticlesCommand extends Command{
 
@@ -10,7 +11,7 @@ public class GetTrendingArticlesCommand extends Command{
         super(args);
     }
 
-    public String execute() {
+    public LinkedHashMap execute() {
         return null;
     }
 }

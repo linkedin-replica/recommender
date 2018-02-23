@@ -1,0 +1,44 @@
+[
+  {
+    "positionName": "Software Developer",
+    "companyName": "Ergasti",
+    "companyId": "3",
+    "requiredSkills": ["NodeJS", "HTML", "CSS", "Java"]
+  },
+  {
+    "positionName": "Data Wrangling Engineer",
+    "companyName": "DFKI",
+    "companyId": "1",
+    "requiredSkills": ["Python", "Java"]
+  },
+  {
+    "positionName": "HR Manager",
+    "companyName": "Vodafone",
+    "companyId": "2",
+    "requiredSkills": ["Team Management", "Administration"]
+  },
+  {
+    "positionName": "Junior Researcher",
+    "companyName": "DHBW",
+    "companyId": "5",
+    "requiredSkills": ["Research", "Python", "NLP"]
+  },
+  {
+    "positionName": "IT Engineer",
+    "companyName": "GUC",
+    "companyId": "4",
+    "requiredSkills": ["Hardware", "Software"]
+  },
+  {
+    "positionName": "web developer",
+    "companyName": "ITWorx",
+    "companyId": "7",
+    "requiredSkills": ["JS", "AngularJS", "HTML", "CSS"]
+  },
+  {
+    "positionName": "Driver",
+    "companyName": "Juhayna",
+    "companyId": "8",
+    "requiredSkills": ["License", "Driving Experience"]
+  }
+]
