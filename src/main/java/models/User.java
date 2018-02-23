@@ -7,6 +7,7 @@ public class User {
     private String lastName;
     private String headline;
     private String industry;
+    private String [] skills;
 
     public User() {
     }
@@ -31,4 +32,5 @@ public class User {
         return industry;
     }
 
+    public String[] getSkills() { return skills; }
 }

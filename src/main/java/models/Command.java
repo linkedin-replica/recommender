@@ -2,6 +2,7 @@ package models;
 
 import database.DatabaseHandler;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -18,7 +19,7 @@ public abstract class Command {
      *
      * @return The output (if any) of the command
      */
-    public abstract LinkedHashMap<String, Object> execute();
+    public abstract LinkedHashMap<String, Object> execute() throws IOException;
 
     public void setArgs(HashMap<String, String> args) {
         this.args = args;
