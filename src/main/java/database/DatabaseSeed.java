@@ -76,6 +76,52 @@ public class DatabaseSeed {
     }
 
     /**
+     * Insert articles specified in articles.json file to the database collection articles
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     * @throws ParseException
+     */
+    public static void insertArticles() throws IOException, ClassNotFoundException, SQLException, ParseException {
+
+        ArangoDB arangoDB = DatabaseConnection.getDBConnection().getArangoDriver();
+        String dbName = config.getConfig("db.name");
+        String collectionName = config.getConfig("collection.articles.name");
+
+        try{
+            arangoDB.db(dbName).
+                    createCollection(collectionName);
+
+        }catch(ArangoDBException exception){
+            //database not found exception
+            if(exception.getErrorNum() == 1228){
+                arangoDB.createDatabase(dbName);
+                arangoDB.db(dbName).createCollection(collectionName);
+            } else if(exception.getErrorNum() == 1207) { // duplicate name error
+                // NoOP
+            }else {
+                throw exception;
+            }
+        }
+        int id = 0;
+        BaseDocument articleDocument;
+        JSONArray jobs = getJSONData("src/main/resources/data/articles.json");
+        for (Object job : jobs) {
+            JSONObject articleObject = (JSONObject) job;
+            articleDocument = new BaseDocument();
+            articleDocument.addAttribute("postId", articleObject.get("postId"));
+            articleDocument.addAttribute("authorId", articleObject.get("authorId"));
+            articleDocument.addAttribute("title", articleObject.get("title"));
+            articleDocument.addAttribute("authorFirstName", articleObject.get("authorFirstName"));
+            articleDocument.addAttribute("authorLastName", articleObject.get("authorLastName"));
+            articleDocument.addAttribute("miniText", articleObject.get("miniText"));
+            articleDocument.addAttribute("peopleTalking", articleObject.get("peopleTalking"));
+            arangoDB.db(dbName).collection(collectionName).insertDocument(articleDocument);
+            System.out.println("New article document insert with key = " + articleDocument.getId());
+        }
+    }
+
+    /**
      * Insert jobs specified in jobs.json file to the database collection jobs
      * @throws IOException
      * @throws ClassNotFoundException

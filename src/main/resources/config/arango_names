@@ -2,3 +2,4 @@ db.name=Linkedin
 collection.users.name=users
 collection.recommendations.name=recommendations
 collection.jobs.name=jobs
+collection.articles.name=articles

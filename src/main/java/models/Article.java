@@ -2,8 +2,8 @@ package models;
 
 public class Article {
 
-    private int authorId;
-    private int postId;
+    private String postId;
+    private String authorId;
     private String title;
     private String authorFirstName;
     private String authorLastName;
@@ -11,7 +11,7 @@ public class Article {
     private int peopleTalking;
 
 
-    public Article(int authorId, int postId, String title, String authorFirstName, String authorLastName, String miniText, int peopleTalking){
+    public Article(String authorId, String postId, String title, String authorFirstName, String authorLastName, String miniText, int peopleTalking) {
         this.authorId = authorId;
         this.postId = postId;
         this.authorFirstName = authorFirstName;
@@ -21,11 +21,11 @@ public class Article {
         this.peopleTalking = peopleTalking;
     }
 
-    public int getAuthorId() {
+    public String getAuthorId() {
         return authorId;
     }
 
-    public int getPostId() {
+    public String getPostId() {
         return postId;
     }
 
@@ -48,8 +48,6 @@ public class Article {
     public int getPeopleTalking() {
         return peopleTalking;
     }
-
-
 
 
 }

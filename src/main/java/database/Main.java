@@ -9,7 +9,7 @@ public class Main {
     public static void main(String[] args) throws IOException, ParseException, SQLException, ClassNotFoundException {
 
         new DatabaseSeed();
-        DatabaseSeed.insertJobs();
+        DatabaseSeed.insertArticles();
     }
 }
 

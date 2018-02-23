@@ -1,0 +1,38 @@
+[
+  {
+    "postId": "0",
+    "authorId": "1",
+    "title": "El 7ob fy Zaman el kolera",
+    "authorFirstName": "7amdy",
+    "authorLastName": "El Wazeer",
+    "miniText": "El kolera kanet w7sha awy awy",
+    "peopleTalking": 500
+  },
+  {
+    "postId": "1",
+    "authorId": "6",
+    "title": "Madinat el baha2em",
+    "authorFirstName": "Mar3y",
+    "authorLastName": "Bta3 el kelema",
+    "miniText": "Behema Beheema Beheema",
+    "peopleTalking": 800
+  },
+  {
+    "postId": "2",
+    "authorId": "5",
+    "title": "La Totfe2 el Shams",
+    "authorFirstName": "Mohamed",
+    "authorLastName": "Ramadan",
+    "miniText": "Ew3a totfe2ha laz3al mennak",
+    "peopleTalking": 10000
+  },
+  {
+    "postId": "3",
+    "authorId": "1",
+    "title": "Eskendrya Leeh",
+    "authorFirstName": "Youssef",
+    "authorLastName": "Shaheen",
+    "miniText": "La wllahy mesh 3aref leeh",
+    "peopleTalking": 6000
+  }
+]
