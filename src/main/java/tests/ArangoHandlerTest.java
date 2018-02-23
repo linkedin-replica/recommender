@@ -69,7 +69,7 @@ public class ArangoHandlerTest {
      */
     public static int jobsMatchingUser(String userId) throws IOException {
         DatabaseHandler databaseHandler = new ArangoHandler();
-        ArangoCursor<VPackSlice> cursor = ArangoHandler.getUserById(userId);
+        ArangoCursor<VPackSlice> cursor = databaseHandler.getUserById(userId);
         VPackSlice userSkills = cursor.next().get("skills");
         ArrayList<JobListing> recommendedJobs = databaseHandler.getRecommendedJobListing(userId);
         int jobs = 0;
