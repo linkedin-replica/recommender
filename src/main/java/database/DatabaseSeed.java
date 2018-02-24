@@ -215,6 +215,27 @@ public class DatabaseSeed {
     }
 
     /**
+     * Delete users collection from the database if it exists
+     * @throws ArangoDBException
+     * @throws FileNotFoundException
+     * @throws ClassNotFoundException
+     * @throws IOException
+     * @throws SQLException
+     */
+    public static void deleteAllUsers() throws ArangoDBException, IOException{
+        String dbName = config.getConfig("db.name");
+        String collectionName = config.getConfig("collection.users.name");
+        try {
+            DatabaseConnection.getDBConnection().getArangoDriver().db(dbName).collection(collectionName).drop();
+        } catch(ArangoDBException exception) {
+            if(exception.getErrorNum() == 1228) {
+                System.out.println("Database not found");
+            }
+        }
+        System.out.println("Jobs collection is dropped");
+    }
+
+    /**
      * Drop specified database from Arango Driver
      *
      * @param dbName Database name to be dropped

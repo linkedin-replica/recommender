@@ -17,7 +17,6 @@ public class GetTrendingArticlesCommand extends Command {
     }
 
     public LinkedHashMap execute() throws IOException {
-
         LinkedHashMap<String, Object> results = new LinkedHashMap<>();
         // call dbHandler to get trendingArticles and return results in the results map as key-value pair
         results.put("results", this.dbHandler.getTrendingArticles(this.args.get("userId")));

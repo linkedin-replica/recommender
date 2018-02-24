@@ -28,14 +28,12 @@ public interface DatabaseHandler {
      */
     ArrayList<JobListing> getRecommendedJobListing(String userId) throws IOException;
 
-
     /**
      * Get a user by his id
      *
      * @param userId: the user's id
      * @return A cursor for the user's data
      */
-
     ArangoCursor<VPackSlice> getUserById(String userId) throws IOException;
     ArangoCursor<VPackSlice> getArticleById(String userId) throws IOException;
 

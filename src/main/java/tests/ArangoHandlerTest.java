@@ -1,22 +1,12 @@
 package tests;
 
-import com.arangodb.ArangoCollection;
 import com.arangodb.ArangoCursor;
-import com.arangodb.ArangoDB;
-import com.arangodb.ArangoDatabase;
-import com.arangodb.entity.BaseDocument;
-import com.arangodb.util.MapBuilder;
-import com.arangodb.velocypack.VPack;
 import com.arangodb.velocypack.VPackSlice;
 import database.ArangoHandler;
-import database.DatabaseConnection;
 import database.DatabaseHandler;
 import database.DatabaseSeed;
 import models.Article;
 import models.JobListing;
-import models.User;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -26,7 +16,7 @@ import utils.ConfigReader;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 
@@ -43,6 +33,14 @@ public class ArangoHandlerTest {
         databaseSeed.insertUsers();
         databaseSeed.insertArticles();
         databaseHandler = new ArangoHandler();
+    }
+
+    @AfterClass
+    public static void teardown() throws IOException {
+        String dbName = config.getConfig("db.name");
+        databaseSeed.deleteAllJobs();
+        databaseSeed.deleteAllUsers();
+        databaseSeed.dropDatabase(dbName);
     }
 
     @Test
@@ -64,7 +62,7 @@ public class ArangoHandlerTest {
         int sharesWeight = Integer.parseInt(config.getConfig("weights.share"));
         int numTrendingArticles = Integer.parseInt(config.getConfig("count.trendingArticles"));
 
-        assertEquals("Trending articles should have at most "+ numTrendingArticles +"values", true, trendingArticles.size() <= numTrendingArticles);
+        assertEquals("Trending articles should have at most " + numTrendingArticles + "values", true, trendingArticles.size() <= numTrendingArticles);
         Debug.println("articles", trendingArticles.toString());
 
         for (Article article :
@@ -83,16 +81,8 @@ public class ArangoHandlerTest {
                     + Integer.parseInt(expectedArticle.get("commentsCount").toString()) * commentsWeight
                     + expectedArticle.get("shares").size() * sharesWeight;
 
-            assertEquals("Trending article should have peopleTalking count", expectedPeopleTalking, article.getPeopleTalking() );
+            assertEquals("Trending article should have peopleTalking count", expectedPeopleTalking, article.getPeopleTalking());
         }
-    }
-
-    @AfterClass
-    public static void teardown() throws IOException {
-        String dbName = config.getConfig("db.name");
-        databaseSeed.deleteAllJobs();
-        databaseSeed.deleteAllUsers();
-        databaseSeed.dropDatabase(dbName);
     }
 
     /**
