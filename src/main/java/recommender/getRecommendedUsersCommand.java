@@ -3,6 +3,7 @@ package recommender;
 import models.Command;
 import models.User;
 
+import java.io.IOException;
 import java.util.*;
 
 public class getRecommendedUsersCommand extends Command {
@@ -12,11 +13,10 @@ public class getRecommendedUsersCommand extends Command {
     }
 
     /**
-     * Execute the command
-     *
+     * Execute the command of recommending users to a certain user
      * @return The output (if any) of the command
      */
-    public LinkedHashMap<String, Object> execute() {
+    public LinkedHashMap<String, Object> execute() throws IOException {
         String userId = this.args.get("userId");
         TreeMap<User, Integer> friendsOfFriends = recommendFriendsOfFriends(userId);
         ArrayList<User> recommendedUsers = sortFriendsOfFriends(friendsOfFriends);
@@ -25,7 +25,14 @@ public class getRecommendedUsersCommand extends Command {
         return results;
     }
 
-    public TreeMap<User, Integer> recommendFriendsOfFriends(String userId) {
+    /**
+     * get all unique friends of friends with their occurrences
+     *
+     * @param userId: the user to get his friends of friends.
+     * @return map of the users and their occurrences count
+     * @throws IOException if the congif file is not found
+     */
+    public TreeMap<User, Integer> recommendFriendsOfFriends(String userId) throws IOException {
         ArrayList<User> friends = this.dbHandler.getFriendsOfUser(userId);
         TreeMap<User, Integer> friendsOfFriends = new TreeMap<User, Integer>();
 
@@ -51,7 +58,7 @@ public class getRecommendedUsersCommand extends Command {
      * @param friendsOfFriends: maps each user to the number of mutual friends
      * @return sorted list of the recommended users
      */
-    public ArrayList<User> sortFriendsOfFriends(TreeMap<User, Integer> friendsOfFriends) {
+    private ArrayList<User> sortFriendsOfFriends(TreeMap<User, Integer> friendsOfFriends) {
         ArrayList<User> recommendedUsers = new ArrayList<User>();
         for (Map.Entry<User, Integer> entry : friendsOfFriends.entrySet()) {
             User cur = entry.getKey();

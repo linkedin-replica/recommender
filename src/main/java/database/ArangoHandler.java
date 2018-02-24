@@ -36,8 +36,20 @@ public class ArangoHandler implements DatabaseHandler {
      * @param userId : the user seeking friend recommendations
      * @return list of recommended users
      */
-    public ArrayList<User> getFriendsOfUser(String userId) {
-        return null;
+    public ArrayList<User> getFriendsOfUser(String userId) throws IOException {
+        ArangoCursor<VPackSlice> userCursor = getUserById(userId);
+        VPackSlice friendsList = userCursor.next().get("friendsList");
+        ArrayList<User> friends = new ArrayList<>();
+        for (int i = 0; i < friendsList.size(); i++) {
+            VPackSlice friend = friendsList.get(i);
+            String id = friend.get("userId").getAsString();
+            String firstName = friend.get("firstName").getAsString();
+            String lastName = friend.get("lastName").getAsString();
+            String headline = friend.get("headline").getAsString();
+            String industry = friend.get("industry").getAsString();
+            friends.add(new User(id, firstName, lastName, headline, industry));
+        }
+        return friends;
     }
 
     /**
