@@ -1,4 +1,4 @@
-package tests;
+package database;
 
 import com.arangodb.ArangoCollection;
 import com.arangodb.ArangoCursor;
