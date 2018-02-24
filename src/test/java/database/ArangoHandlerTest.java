@@ -38,8 +38,12 @@ public class ArangoHandlerTest {
     }
 
     @Test
-    public void testRecommendUsers() {
-        //TODO
+    public void testGetFriendsOfUser() throws IOException {
+        ArangoHandler arangoHandler = new ArangoHandler();
+        ArrayList<User> friends = arangoHandler.getFriendsOfUser("0");
+        assertEquals("Frind list should be of size 3", true, friends.size() == 3);
+        assertEquals("First friend first name should be Ahmed", "Ahmed", friends.get(0).getFirstName());
+        assertEquals("Second friend lastName should be Bob", "Bob", friends.get(1).getLastName());
     }
 
     @Test
