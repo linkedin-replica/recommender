@@ -116,6 +116,7 @@ public class DatabaseSeed {
             articleDocument.addAttribute("authorId", articleObject.get("authorId"));
             articleDocument.addAttribute("headline", articleObject.get("headline"));
             articleDocument.addAttribute("timestamp", articleObject.get("timestamp"));
+            articleDocument.addAttribute("text", articleObject.get("text"));
             articleDocument.addAttribute("likesCount", articleObject.get("likesCount"));
             articleDocument.addAttribute("commentsCount", articleObject.get("commentsCount"));
             articleDocument.addAttribute("shares", articleObject.get("shares"));

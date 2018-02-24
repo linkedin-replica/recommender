@@ -11,7 +11,12 @@ public class Article {
     private int peopleTalking;
 
 
+    public Article() {
+        super();
+    }
+
     public Article(String authorId, String postId, String title, String authorFirstName, String authorLastName, String miniText, int peopleTalking) {
+        this();
         this.authorId = authorId;
         this.postId = postId;
         this.authorFirstName = authorFirstName;
@@ -49,5 +54,8 @@ public class Article {
         return peopleTalking;
     }
 
-
+    @Override
+    public String toString() {
+        return title + "\t" + authorFirstName + " " + authorLastName + " " + peopleTalking;
+    }
 }

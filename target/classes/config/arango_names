@@ -3,3 +3,7 @@ collection.users.name=users
 collection.recommendations.name=recommendations
 collection.jobs.name=jobs
 collection.articles.name=articles
+weights.like = 1
+weights.comment = 5
+weights.share = 15
+count.trendingArticles = 5

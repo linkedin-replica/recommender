@@ -49,11 +49,11 @@ public class ArangoHandler implements DatabaseHandler {
         VPackSlice userSkills = userCursor.next().get("skills");
         //query for getting jobListing if there is a match between this jobListing and requesting user's skills
         String jobsCollectionName = config.getConfig("collection.jobs.name");
-        String query = "FOR job IN @jobs FILTER "
+        String query = "FOR job IN jobs FILTER "
                 + "COUNT(INTERSECTION(@userSkills, job.requiredSkills)) != 0 "
                 + "RETURN job";
         //bind variables
-        Map<String, Object> bindVars = new MapBuilder().put("jobs", jobsCollectionName).put("userSkills", userSkills).get();
+        Map<String, Object> bindVars = new MapBuilder().put("userSkills", userSkills).get();
 
         //execute query
         ArangoCursor<JobListing> cursor = dbInstance.query(query, bindVars, null, JobListing.class);
@@ -65,13 +65,25 @@ public class ArangoHandler implements DatabaseHandler {
     public ArangoCursor<VPackSlice> getUserById(String userId) throws IOException {
         String dbName = config.getConfig("db.name");
         String userCollectionName = config.getConfig("collection.users.name");
-        String query = "FOR u IN @userCollectionName FILTER "
+        String query = "FOR u IN users FILTER "
                 + "u.userId == @userId "
                 + "RETURN u";
         Map<String, Object> bindVars = new MapBuilder().put("userId", userId).get();
         ArangoDatabase db = DatabaseConnection.getDBConnection().getArangoDriver().db(dbName);
         return db.query(query, bindVars, null, VPackSlice.class);
     }
+
+    public ArangoCursor<VPackSlice> getArticleById(String postId) throws IOException {
+        String dbName = config.getConfig("db.name");
+        String articlesCollectionName = config.getConfig("collection.articles.name");
+        String query = "FOR article IN articles FILTER "
+                + "article.postId == @postId "
+                + "RETURN article";
+        Map<String, Object> bindVars = new MapBuilder().put("postId", postId).get();
+        ArangoDatabase db = DatabaseConnection.getDBConnection().getArangoDriver().db(dbName);
+        return db.query(query, bindVars, null, VPackSlice.class);
+    }
+
 
     /**
      * Get the trending articles for a specific user
@@ -83,24 +95,43 @@ public class ArangoHandler implements DatabaseHandler {
 
         String articlesCollectionName = config.getConfig("collection.articles.name");
         int likesWeight = Integer.parseInt(config.getConfig("weights.like"));
-        int commentsWeight = Integer.parseInt(config.getConfig("weights.comments"));
-        int sharesWeight = Integer.parseInt(config.getConfig("weights.shares"));
+        int commentsWeight = Integer.parseInt(config.getConfig("weights.comment"));
+        int sharesWeight = Integer.parseInt(config.getConfig("weights.share"));
         int numTrendingArticles = Integer.parseInt(config.getConfig("count.trendingArticles"));
 
-        //query for getting the top n articles sorted by likes, comments and shares with their weights from the most recent 100 articles
-        String query = "FOR article IN @articles"
-                + "SORT article.timestamp DESC"
-                + "LIMIT 0, 100"
-                + "LET comments = articles.commentsCount * @commentsWeight"
-                + "LET likes = articles.likesCount * @likesWeight"
-                + "LET shares = LENGTH(article.shares) * @sharesWeight"
-                + "SORT shares, comments, likes DESC"
-                + "LIMIT 0, @numArticles"
-                + "RETURN article";
+        //query for getting the top n articles sorted by likes, comments and shares with their weights from the most recent 50 articles
+        String queryHeader = "FOR article IN articles ";
+
+        String getAuthorQuery = "LET author = FIRST(FOR u IN users " +
+                "FILTER u.userId == article.authorId " +
+                "RETURN u) ";
+
+        String sortArticlesByTimeQuery = "SORT article.timestamp DESC "
+                + "LIMIT 0, 50 ";
+
+        String sortArticlesByPopularityQuery = "LET comments = article.commentsCount * @commentsWeight "
+                + "LET likes = article.likesCount * @likesWeight "
+                + "LET shares = LENGTH(article.shares) * @sharesWeight "
+                + "LET total = likes + shares + comments "
+                + "SORT total DESC "
+                + "LIMIT 0, @numArticles ";
+
+
+        String returnQuery = "RETURN {" +
+                "\"postId\": article.postId," +
+                "\"authorId\": article.authorId," +
+                "\"title\": article.headline," +
+                "\"authorFirstName\": author.firstName," +
+                "\"authorLastName\": author.lastName," +
+                "\"miniText\": LEFT(article.text, 200)," +
+                "\"peopleTalking\": total" +
+                "}";
+
+        String query = queryHeader + getAuthorQuery + sortArticlesByTimeQuery + sortArticlesByPopularityQuery
+                + returnQuery;
 
         //bind variables
         Map<String, Object> bindVars = new MapBuilder()
-                .put("articles", articlesCollectionName)
                 .put("likesWeight", likesWeight)
                 .put("commentsWeight", commentsWeight)
                 .put("sharesWeight", sharesWeight)

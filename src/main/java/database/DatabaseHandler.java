@@ -37,6 +37,7 @@ public interface DatabaseHandler {
      */
 
     ArangoCursor<VPackSlice> getUserById(String userId) throws IOException;
+    ArangoCursor<VPackSlice> getArticleById(String userId) throws IOException;
 
     /**
      * Get the trending articles for a specific user
