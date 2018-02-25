@@ -73,6 +73,7 @@ public class DatabaseSeed {
             userDocument.addAttribute("headline", userObject.get("headline"));
             userDocument.addAttribute("industry", userObject.get("industry"));
             userDocument.addAttribute("skills", userObject.get("skills"));
+            userDocument.addAttribute("friendsList", userObject.get("friendsList"));
             arangoDB.db(dbName).collection(collectionName).insertDocument(userDocument);
             System.out.println("New user document insert with key = " + userDocument.getId());
         }
@@ -186,27 +187,6 @@ public class DatabaseSeed {
             DatabaseConnection.getDBConnection().getArangoDriver().db(dbName).collection(collectionName).drop();
         } catch (ArangoDBException exception) {
             if (exception.getErrorNum() == 1228) {
-                System.out.println("Database not found");
-            }
-        }
-        System.out.println("Jobs collection is dropped");
-    }
-
-    /**
-     * Delete users collection from the database if it exists
-     * @throws ArangoDBException
-     * @throws FileNotFoundException
-     * @throws ClassNotFoundException
-     * @throws IOException
-     * @throws SQLException
-     */
-    public static void deleteAllUsers() throws ArangoDBException, IOException{
-        String dbName = config.getArangoConfig("db.name");
-        String collectionName = config.getArangoConfig("collection.users.name");
-        try {
-            DatabaseConnection.getDBConnection().getArangoDriver().db(dbName).collection(collectionName).drop();
-        } catch(ArangoDBException exception) {
-            if(exception.getErrorNum() == 1228) {
                 System.out.println("Database not found");
             }
         }

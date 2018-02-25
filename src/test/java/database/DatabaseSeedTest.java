@@ -1,4 +1,4 @@
-package tests;
+package database;
 
 import com.arangodb.ArangoDB;
 import database.DatabaseConnection;

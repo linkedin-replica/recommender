@@ -5,7 +5,35 @@
     "lastName": "Radwan",
     "headline": "Software Engineer at DFKI",
     "industry": "Software",
-    "skills": ["Python", "Java", "HTML", "CSS"]
+    "skills": [
+      "Python",
+      "Java",
+      "HTML",
+      "CSS"
+    ],
+    "friendsList": [
+      {
+        "userId": "1",
+        "firstName": "Ahmed",
+        "lastName": "Soliman",
+        "headline": "Junior Data Wrangling Engineer",
+        "industry": "Software"
+      },
+      {
+        "userId": "2",
+        "firstName": "John",
+        "lastName": "Bob",
+        "headline": "Truck Driver",
+        "industry": "Market"
+      },
+      {
+        "userId": "3",
+        "firstName": "Mark",
+        "lastName": "Lopez",
+        "headline": "Student",
+        "industry": "N/A"
+      }
+    ]
   },
   {
     "userId": "1",
