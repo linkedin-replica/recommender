@@ -28,7 +28,7 @@ public class ArangoHandlerTest {
     @BeforeClass
     public static void setup() throws IOException, ParseException, SQLException, ClassNotFoundException {
         databaseSeed = new DatabaseSeed();
-        config = new ConfigReader("arango_names");
+        config = ConfigReader.getInstance();
         databaseSeed.insertJobs();
         databaseSeed.insertUsers();
         databaseSeed.insertArticles();
@@ -37,9 +37,8 @@ public class ArangoHandlerTest {
 
     @AfterClass
     public static void teardown() throws IOException {
-        String dbName = config.getConfig("db.name");
+        String dbName = config.getArangoConfig("db.name");
         databaseSeed.deleteAllJobs();
-        databaseSeed.deleteAllUsers();
         databaseSeed.dropDatabase(dbName);
     }
 
@@ -57,10 +56,10 @@ public class ArangoHandlerTest {
     @Test
     public void testRecommendTrendingArticles() throws IOException, ParseException {
         ArrayList<Article> trendingArticles = databaseHandler.getTrendingArticles("0");
-        int likesWeight = Integer.parseInt(config.getConfig("weights.like"));
-        int commentsWeight = Integer.parseInt(config.getConfig("weights.comment"));
-        int sharesWeight = Integer.parseInt(config.getConfig("weights.share"));
-        int numTrendingArticles = Integer.parseInt(config.getConfig("count.trendingArticles"));
+        int likesWeight = Integer.parseInt(config.getArangoConfig("weights.like"));
+        int commentsWeight = Integer.parseInt(config.getArangoConfig("weights.comment"));
+        int sharesWeight = Integer.parseInt(config.getArangoConfig("weights.share"));
+        int numTrendingArticles = Integer.parseInt(config.getArangoConfig("count.trendingArticles"));
 
         assertEquals("Trending articles should have at most " + numTrendingArticles + "values", true, trendingArticles.size() <= numTrendingArticles);
         Debug.println("articles", trendingArticles.toString());

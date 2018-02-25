@@ -18,15 +18,15 @@ public class DatabaseConnection {
     private static DatabaseConnection dbConnection;
 
     private DatabaseConnection() throws IOException {
-        config = new ConfigReader("database_auth");
+        config = ConfigReader.getInstance();
 
         initializeArangoDB();
     }
 
     private void initializeArangoDB() {
         arangoDriver = new ArangoDB.Builder()
-                .user(config.getConfig("arangodb.user"))
-                .password(config.getConfig("arangodb.password"))
+                .user(config.getArangoConfig("arangodb.user"))
+                .password(config.getArangoConfig("arangodb.password"))
                 .build();
     }
 
@@ -36,8 +36,12 @@ public class DatabaseConnection {
      * @return The DB instance
      */
     public static DatabaseConnection getDBConnection() throws IOException {
-        if (dbConnection == null)
-            dbConnection = new DatabaseConnection();
+        if(dbConnection == null) {
+            synchronized (DatabaseConnection.class) {
+                if (dbConnection == null)
+                    dbConnection = new DatabaseConnection();
+            }
+        }
         return dbConnection;
     }
 

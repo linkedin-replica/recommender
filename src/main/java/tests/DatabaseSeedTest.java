@@ -23,14 +23,14 @@ public class DatabaseSeedTest {
     @BeforeClass
     public static void Setup() throws IOException {
         databaseSeed = new DatabaseSeed();
-        config = new ConfigReader("arango_names");
+        config = ConfigReader.getInstance();
     }
 
     @Test
     public void testJobsInsertion() throws IOException, ParseException, SQLException, ClassNotFoundException {
         databaseSeed.insertJobs();
-        String dbName = config.getConfig("db.name");
-        String collectionName = config.getConfig("collection.jobs.name");
+        String dbName = config.getArangoConfig("db.name");
+        String collectionName = config.getArangoConfig("collection.jobs.name");
         ArangoDB arangoDB = DatabaseConnection.getDBConnection().getArangoDriver();
         int size = databaseSeed.getJSONData("src/main/resources/data/jobs.json").size();
         System.out.println(size);
@@ -43,8 +43,8 @@ public class DatabaseSeedTest {
     @Test
     public void testUsersInsertion() throws IOException, ParseException {
         databaseSeed.insertUsers();
-        String dbName = config.getConfig("db.name");
-        String collectionName = config.getConfig("collection.users.name");
+        String dbName = config.getArangoConfig("db.name");
+        String collectionName = config.getArangoConfig("collection.users.name");
         ArangoDB arangoDB = DatabaseConnection.getDBConnection().getArangoDriver();
         int size = databaseSeed.getJSONData("src/main/resources/data/users.json").size();
         assertEquals("Database was not created", true, arangoDB.getDatabases().contains(dbName));
@@ -55,8 +55,8 @@ public class DatabaseSeedTest {
     @Test
     public void testJobsDeletions() throws IOException, ParseException {
         databaseSeed.insertUsers();
-        String dbName = config.getConfig("db.name");
-        String collectionName = config.getConfig("collection.jobs.name");
+        String dbName = config.getArangoConfig("db.name");
+        String collectionName = config.getArangoConfig("collection.jobs.name");
         ArangoDB arangoDB = DatabaseConnection.getDBConnection().getArangoDriver();
         int size = databaseSeed.getJSONData("src/main/resources/data/users.json").size();
         databaseSeed.deleteAllJobs();
@@ -65,7 +65,7 @@ public class DatabaseSeedTest {
 
     @Test
     public void testDropDatabase() throws IOException {
-        String dbName = config.getConfig("db.name");
+        String dbName = config.getArangoConfig("db.name");
         databaseSeed.dropDatabase(dbName);
         ArangoDB arangoDB = DatabaseConnection.getDBConnection().getArangoDriver();
         assertEquals("Database should be dropped", false, arangoDB.db(dbName).exists());
@@ -73,7 +73,7 @@ public class DatabaseSeedTest {
 
     @AfterClass
     public static void teardown() throws IOException {
-        String dbName = config.getConfig("db.name");
+        String dbName = config.getArangoConfig("db.name");
         databaseSeed.deleteAllJobs();
         //databaseSeed.deleteAllUsers();
         databaseSeed.dropDatabase(dbName);

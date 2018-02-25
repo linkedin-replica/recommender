@@ -23,11 +23,11 @@ public class ArangoHandler implements DatabaseHandler {
 
     public ArangoHandler() throws IOException {
         // read arango constants
-        config = new ConfigReader("arango_names");
+        config = ConfigReader.getInstance();
 
         // init db
         ArangoDB arangoDriver = DatabaseConnection.getDBConnection().getArangoDriver();
-        dbInstance = arangoDriver.db(config.getConfig("db.name"));
+        dbInstance = arangoDriver.db(config.getArangoConfig("db.name"));
     }
 
     /**
@@ -51,7 +51,7 @@ public class ArangoHandler implements DatabaseHandler {
         ArangoCursor<VPackSlice> userCursor = getUserById(userId);
         VPackSlice userSkills = userCursor.next().get("skills");
         //query for getting jobListing if there is a match between this jobListing and requesting user's skills
-        String jobsCollectionName = config.getConfig("collection.jobs.name");
+        String jobsCollectionName = config.getArangoConfig("collection.jobs.name");
         String query = "FOR job IN jobs FILTER "
                 + "COUNT(INTERSECTION(@userSkills, job.requiredSkills)) != 0 "
                 + "RETURN job";
@@ -66,8 +66,8 @@ public class ArangoHandler implements DatabaseHandler {
     }
 
     public ArangoCursor<VPackSlice> getUserById(String userId) throws IOException {
-        String dbName = config.getConfig("db.name");
-        String userCollectionName = config.getConfig("collection.users.name");
+        String dbName = config.getArangoConfig("db.name");
+        String userCollectionName = config.getArangoConfig("collection.users.name");
         String query = "FOR u IN users FILTER "
                 + "u.userId == @userId "
                 + "RETURN u";
@@ -77,8 +77,8 @@ public class ArangoHandler implements DatabaseHandler {
     }
 
     public ArangoCursor<VPackSlice> getArticleById(String postId) throws IOException {
-        String dbName = config.getConfig("db.name");
-        String articlesCollectionName = config.getConfig("collection.articles.name");
+        String dbName = config.getArangoConfig("db.name");
+        String articlesCollectionName = config.getArangoConfig("collection.articles.name");
         String query = "FOR article IN articles FILTER "
                 + "article.postId == @postId "
                 + "RETURN article";
@@ -96,11 +96,11 @@ public class ArangoHandler implements DatabaseHandler {
      */
     public ArrayList<Article> getTrendingArticles(String userId) throws IOException {
 
-        String articlesCollectionName = config.getConfig("collection.articles.name");
-        int likesWeight = Integer.parseInt(config.getConfig("weights.like"));
-        int commentsWeight = Integer.parseInt(config.getConfig("weights.comment"));
-        int sharesWeight = Integer.parseInt(config.getConfig("weights.share"));
-        int numTrendingArticles = Integer.parseInt(config.getConfig("count.trendingArticles"));
+        String articlesCollectionName = config.getArangoConfig("collection.articles.name");
+        int likesWeight = Integer.parseInt(config.getArangoConfig("weights.like"));
+        int commentsWeight = Integer.parseInt(config.getArangoConfig("weights.comment"));
+        int sharesWeight = Integer.parseInt(config.getArangoConfig("weights.share"));
+        int numTrendingArticles = Integer.parseInt(config.getArangoConfig("count.trendingArticles"));
 
         //query for getting the top n articles sorted by likes, comments and shares with their weights from the most recent 50 articles
         String queryHeader = "FOR article IN articles ";
