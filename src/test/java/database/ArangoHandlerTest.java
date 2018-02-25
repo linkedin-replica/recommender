@@ -14,6 +14,8 @@ import database.DatabaseHandler;
 import database.DatabaseSeed;
 import models.JobListing;
 import models.User;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -38,12 +40,17 @@ public class ArangoHandlerTest {
     }
 
     @Test
-    public void testGetFriendsOfUser() throws IOException {
+    public void testGetFriendsOfUser() throws IOException, ParseException {
+        JSONArray users = DatabaseSeed.getJSONData("src/main/resources/data/users.json");
+        JSONObject firstUser = (JSONObject) users.get(0);
+        JSONArray firstUserFriends = (JSONArray) firstUser.get("friendsList");
+        int friendsSize = firstUserFriends.size();
+        JSONObject firstFriend = (JSONObject) firstUserFriends.get(0);
+        String firstFriendName = (String) firstFriend.get("firstName");
         ArangoHandler arangoHandler = new ArangoHandler();
         ArrayList<User> friends = arangoHandler.getFriendsOfUser("0");
-        assertEquals("Frind list should be of size 3", true, friends.size() == 3);
-        assertEquals("First friend first name should be Ahmed", "Ahmed", friends.get(0).getFirstName());
-        assertEquals("Second friend lastName should be Bob", "Bob", friends.get(1).getLastName());
+        assertEquals("Friend list should be of size " + friendsSize, friendsSize, friends.size());
+        assertEquals("First friend's first name should be " + firstFriendName, firstFriendName, friends.get(0).getFirstName());
     }
 
     @Test
