@@ -17,7 +17,7 @@ public interface DatabaseHandler {
      * @param userId: the user seeking friend recommendations
      * @return list of recommended users
      */
-    ArrayList<User> getRecommendedUsers(int userId);
+    ArrayList<User> getFriendsOfUser(String userId) throws IOException;
 
 
     /**
