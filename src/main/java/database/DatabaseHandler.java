@@ -1,7 +1,9 @@
 package database;
 
-import models.JobListing;
+import com.arangodb.ArangoCursor;
+import com.arangodb.velocypack.VPackSlice;
 import models.Article;
+import models.JobListing;
 import models.User;
 
 import java.io.IOException;
@@ -26,6 +28,14 @@ public interface DatabaseHandler {
      */
     ArrayList<JobListing> getRecommendedJobListing(String userId) throws IOException;
 
+    /**
+     * Get a user by his id
+     *
+     * @param userId: the user's id
+     * @return A cursor for the user's data
+     */
+    ArangoCursor<VPackSlice> getUserById(String userId) throws IOException;
+    ArangoCursor<VPackSlice> getArticleById(String userId) throws IOException;
 
     /**
      * Get the trending articles for a specific user
@@ -33,6 +43,6 @@ public interface DatabaseHandler {
      * @param userId: the user seeking trending articles
      * @return list of trending articles
      */
-    ArrayList<Article> getTrendingArticles(int userId);
+    ArrayList<Article> getTrendingArticles(String userId) throws IOException;
 
 }
