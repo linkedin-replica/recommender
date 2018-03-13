@@ -1,7 +1,7 @@
-package models;
+package com.linkedin.replica.recommender.commands;
 
 
-import database.DatabaseHandler;
+import com.linkedin.replica.recommender.database.handlers.DatabaseHandler;
 
 import java.io.IOException;
 import java.util.HashMap;
