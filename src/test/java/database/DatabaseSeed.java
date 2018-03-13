@@ -2,13 +2,14 @@ package database;
 
 import com.arangodb.ArangoDB;
 import com.arangodb.ArangoDBException;
+import com.arangodb.ArangoDatabase;
 import com.arangodb.entity.BaseDocument;
-import models.Article;
+import com.linkedin.replica.recommender.database.DatabaseConnection;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import utils.ConfigReader;
+import com.linkedin.replica.recommender.utils.Configuration;
 
 import java.io.*;
 import java.sql.SQLException;
@@ -16,12 +17,29 @@ import java.util.*;
 
 public class DatabaseSeed {
 
-    private static ConfigReader config;
-    private ArangoDB arangoDriver;
-    private DatabaseHandler dbHandler;
+    private static Configuration config;
+    private static ArangoDatabase arangoDatabaseInstance;
 
-    public DatabaseSeed() throws FileNotFoundException, IOException {
-        config = ConfigReader.getInstance();
+    private DatabaseSeed() {
+    }
+
+    public static void init() throws IOException, ParseException, SQLException, ClassNotFoundException {
+        Configuration.init("src/main/resources/config/app.config", "src/main/resources/config/arango.test.config", "src/main/resources/config/commands.config");
+        config = Configuration.getInstance();
+        String dbName = config.getArangoConfig("db.name");
+        DatabaseConnection.init();
+        ArangoDB arangoDB = DatabaseConnection.getInstance().getArangoDriver();
+        try {
+            arangoDB.createDatabase(dbName);
+        }
+        catch (ArangoDBException exception) {
+            exception.printStackTrace();
+        }
+
+        arangoDatabaseInstance = arangoDB.db(dbName);
+        insertUsers();
+        insertJobs();
+        insertArticles();
     }
 
 
@@ -44,24 +62,13 @@ public class DatabaseSeed {
      * @throws ParseException
      */
     public static void insertUsers() throws IOException, ParseException {
-
-        ArangoDB arangoDB = DatabaseConnection.getDBConnection().getArangoDriver();
-        String dbName = config.getArangoConfig("db.name");
         String collectionName = config.getArangoConfig("collection.users.name");
         try {
-            arangoDB.db(dbName).createCollection(collectionName);
+            arangoDatabaseInstance.createCollection(collectionName);
         } catch (ArangoDBException exception) {
-            if (exception.getErrorNum() == 1228) {
-                arangoDB.createDatabase(dbName);
-                arangoDB.db(dbName).createCollection(collectionName);
-            } else if (exception.getErrorNum() == 1207) {
-                //NoOP
-            } else {
-                throw exception;
-            }
+           exception.printStackTrace();
         }
 
-        int id = 0;
         BaseDocument userDocument;
         JSONArray users = getJSONData("src/main/resources/data/users.json");
         for (Object user : users) {
@@ -74,7 +81,7 @@ public class DatabaseSeed {
             userDocument.addAttribute("industry", userObject.get("industry"));
             userDocument.addAttribute("skills", userObject.get("skills"));
             userDocument.addAttribute("friendsList", userObject.get("friendsList"));
-            arangoDB.db(dbName).collection(collectionName).insertDocument(userDocument);
+            arangoDatabaseInstance.collection(collectionName).insertDocument(userDocument);
             System.out.println("New user document insert with key = " + userDocument.getId());
         }
     }
@@ -88,25 +95,13 @@ public class DatabaseSeed {
      * @throws ParseException
      */
     public static void insertArticles() throws IOException, ClassNotFoundException, SQLException, ParseException {
-
-        ArangoDB arangoDB = DatabaseConnection.getDBConnection().getArangoDriver();
-        String dbName = config.getArangoConfig("db.name");
         String collectionName = config.getArangoConfig("collection.articles.name");
 
         try {
-            arangoDB.db(dbName).
-                    createCollection(collectionName);
+            arangoDatabaseInstance.createCollection(collectionName);
 
         } catch (ArangoDBException exception) {
-            //database not found exception
-            if (exception.getErrorNum() == 1228) {
-                arangoDB.createDatabase(dbName);
-                arangoDB.db(dbName).createCollection(collectionName);
-            } else if (exception.getErrorNum() == 1207) { // duplicate name error
-                // NoOP
-            } else {
-                throw exception;
-            }
+            exception.printStackTrace();
         }
         BaseDocument articleDocument;
         JSONArray articles = getJSONData("src/main/resources/data/articles.json");
@@ -121,7 +116,7 @@ public class DatabaseSeed {
             articleDocument.addAttribute("likesCount", articleObject.get("likesCount"));
             articleDocument.addAttribute("commentsCount", articleObject.get("commentsCount"));
             articleDocument.addAttribute("shares", articleObject.get("shares"));
-            arangoDB.db(dbName).collection(collectionName).insertDocument(articleDocument);
+            arangoDatabaseInstance.collection(collectionName).insertDocument(articleDocument);
             System.out.println("New article document insert with key = " + articleDocument.getId());
         }
     }
@@ -135,38 +130,24 @@ public class DatabaseSeed {
      * @throws ParseException
      */
     public static void insertJobs() throws IOException, ClassNotFoundException, SQLException, ParseException {
-
-        ArangoDB arangoDB = DatabaseConnection.getDBConnection().getArangoDriver();
-        String dbName = config.getArangoConfig("db.name");
         String collectionName = config.getArangoConfig("collection.jobs.name");
         try {
-            arangoDB.db(dbName).
-                    createCollection(collectionName);
+            arangoDatabaseInstance.createCollection(collectionName);
 
         } catch (ArangoDBException exception) {
-            //database not found exception
-            if (exception.getErrorNum() == 1228) {
-                arangoDB.createDatabase(dbName);
-                arangoDB.db(dbName).createCollection(collectionName);
-            } else if (exception.getErrorNum() == 1207) { // duplicate name error
-                // NoOP
-            } else {
-                throw exception;
-            }
+            exception.printStackTrace();
         }
-        int id = 0;
         BaseDocument jobDocument;
         JSONArray jobs = getJSONData("src/main/resources/data/jobs.json");
         for (Object job : jobs) {
             JSONObject jobObject = (JSONObject) job;
             jobDocument = new BaseDocument();
 
-//            jobDocument.addAttribute("JobID", id++);
             jobDocument.addAttribute("positionName", jobObject.get("positionName"));
             jobDocument.addAttribute("companyName", jobObject.get("companyName"));
             jobDocument.addAttribute("companyId", jobObject.get("companyId"));
             jobDocument.addAttribute("requiredSkills", jobObject.get("requiredSkills"));
-            arangoDB.db(dbName).collection(collectionName).insertDocument(jobDocument);
+            arangoDatabaseInstance.collection(collectionName).insertDocument(jobDocument);
             System.out.println("New job document insert with key = " + jobDocument.getId());
         }
     }
@@ -181,10 +162,9 @@ public class DatabaseSeed {
      * @throws SQLException
      */
     public static void deleteAllJobs() throws ArangoDBException, IOException {
-        String dbName = config.getArangoConfig("db.name");
         String collectionName = config.getArangoConfig("collection.jobs.name");
         try {
-            DatabaseConnection.getDBConnection().getArangoDriver().db(dbName).collection(collectionName).drop();
+            arangoDatabaseInstance.collection(collectionName).drop();
         } catch (ArangoDBException exception) {
             if (exception.getErrorNum() == 1228) {
                 System.out.println("Database not found");
@@ -196,12 +176,11 @@ public class DatabaseSeed {
     /**
      * Drop specified database from Arango Driver
      *
-     * @param dbName Database name to be dropped
      * @throws IOException
      */
-    public static void dropDatabase(String dbName) throws IOException {
+    public static void dropDatabase() throws IOException {
         try {
-            DatabaseConnection.getDBConnection().getArangoDriver().db(dbName).drop();
+            arangoDatabaseInstance.drop();
         } catch (ArangoDBException exception) {
             if (exception.getErrorNum() == 1228) {
                 System.out.println("Database not found");
@@ -217,8 +196,7 @@ public class DatabaseSeed {
      * @throws IOException
      */
     public static void closeDBConnection() throws ArangoDBException, IOException {
-
-        DatabaseConnection.getDBConnection().getArangoDriver().shutdown();
+        DatabaseConnection.getInstance().getArangoDriver().shutdown();
     }
 
 

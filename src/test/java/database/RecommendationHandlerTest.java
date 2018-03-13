@@ -2,20 +2,18 @@ package database;
 
 import com.arangodb.ArangoCursor;
 import com.arangodb.velocypack.VPackSlice;
-import database.ArangoHandler;
-import database.DatabaseHandler;
-import database.DatabaseSeed;
-import models.Article;
-import models.JobListing;
-import models.User;
+import com.linkedin.replica.recommender.database.handlers.RecommendationHandler;
+import com.linkedin.replica.recommender.database.handlers.impl.ArangoHandler;
+import com.linkedin.replica.recommender.models.Article;
+import com.linkedin.replica.recommender.models.JobListing;
+import com.linkedin.replica.recommender.models.User;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import sun.security.ssl.Debug;
-import utils.ConfigReader;
+import com.linkedin.replica.recommender.utils.Configuration;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -23,26 +21,15 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 
-public class ArangoHandlerTest {
-    private static DatabaseSeed databaseSeed;
-    private static ConfigReader config;
-    private static DatabaseHandler databaseHandler;
+public class RecommendationHandlerTest {
+    private static RecommendationHandler databaseHandler;
+    private static Configuration config;
 
     @BeforeClass
     public static void setup() throws IOException, ParseException, SQLException, ClassNotFoundException {
-        databaseSeed = new DatabaseSeed();
-        config = ConfigReader.getInstance();
-        databaseSeed.insertJobs();
-        databaseSeed.insertUsers();
-        databaseSeed.insertArticles();
-        databaseHandler = new ArangoHandler();
-    }
-
-    @AfterClass
-    public static void teardown() throws IOException {
-        String dbName = config.getArangoConfig("db.name");
-        databaseSeed.deleteAllJobs();
-        databaseSeed.dropDatabase(dbName);
+        DatabaseSeed.init();
+        databaseHandler =  new ArangoHandler();
+        config = Configuration.getInstance();
     }
 
     @Test
@@ -92,6 +79,12 @@ public class ArangoHandlerTest {
 
             assertEquals("Trending article should have peopleTalking count", expectedPeopleTalking, article.getPeopleTalking());
         }
+    }
+
+    @AfterClass
+    public static void teardown() throws IOException {
+        DatabaseSeed.closeDBConnection();
+        DatabaseSeed.dropDatabase();
     }
 
     /**
