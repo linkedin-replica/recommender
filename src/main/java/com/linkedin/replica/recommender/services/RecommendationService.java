@@ -1,8 +1,8 @@
-package services;
+package com.linkedin.replica.recommender.services;
 
-import database.DatabaseHandler;
-import models.Command;
-import utils.ConfigReader;
+import com.linkedin.replica.recommender.commands.Command;
+import com.linkedin.replica.recommender.database.handlers.DatabaseHandler;
+import com.linkedin.replica.recommender.utils.Configuration;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -10,11 +10,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-public class RecommenderService {
-    private ConfigReader config;
+public class RecommendationService {
+    private Configuration config;
 
-    public RecommenderService() throws IOException {
-        config = ConfigReader.getInstance();
+    public RecommendationService() throws IOException {
+        config = Configuration.getInstance();
     }
 
     public LinkedHashMap<String, Object> serve(String commandName, HashMap<String, String> args) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, IOException {
@@ -22,10 +22,10 @@ public class RecommenderService {
         Constructor constructor = commandClass.getConstructor(HashMap.class);
         Command command = (Command) constructor.newInstance(args);
 
-        Class<?> noSqlHandlerClass = config.getNoSqlHandler();
-        DatabaseHandler noSqlHandler = (DatabaseHandler) noSqlHandlerClass.newInstance();
+        Class<?> databaseHandlerClass = config.getDatabaseHandlerClass(commandName);
+        DatabaseHandler dbHandler = (DatabaseHandler) databaseHandlerClass.newInstance();
 
-        command.setDbHandler(noSqlHandler);
+        command.setDbHandler(dbHandler);
 
         return command.execute();
     }

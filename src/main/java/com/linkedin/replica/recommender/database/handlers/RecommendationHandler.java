@@ -1,15 +1,15 @@
-package database;
+package com.linkedin.replica.recommender.database.handlers;
 
 import com.arangodb.ArangoCursor;
 import com.arangodb.velocypack.VPackSlice;
-import models.Article;
-import models.JobListing;
-import models.User;
+import com.linkedin.replica.recommender.models.Article;
+import com.linkedin.replica.recommender.models.JobListing;
+import com.linkedin.replica.recommender.models.User;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-public interface DatabaseHandler {
+public interface RecommendationHandler extends DatabaseHandler{
 
     /**
      * Get the recommended users for a specific user

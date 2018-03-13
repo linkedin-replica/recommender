@@ -1,33 +1,29 @@
-package database;
+package com.linkedin.replica.recommender.database.handlers.impl;
 
 
-import com.arangodb.ArangoCollection;
 import com.arangodb.ArangoCursor;
 import com.arangodb.ArangoDB;
 import com.arangodb.ArangoDatabase;
-import com.arangodb.entity.BaseDocument;
 import com.arangodb.util.MapBuilder;
 import com.arangodb.velocypack.VPackSlice;
-import models.Article;
-import models.JobListing;
-import models.User;
-import utils.ConfigReader;
+import com.linkedin.replica.recommender.models.Article;
+import com.linkedin.replica.recommender.models.JobListing;
+import com.linkedin.replica.recommender.models.User;
+import com.linkedin.replica.recommender.utils.Configuration;
+import com.linkedin.replica.recommender.database.DatabaseConnection;
+import com.linkedin.replica.recommender.database.handlers.RecommendationHandler;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class ArangoHandler implements DatabaseHandler {
-    private static ConfigReader config;
+public class ArangoHandler implements RecommendationHandler {
     private ArangoDatabase dbInstance;
 
     public ArangoHandler() throws IOException {
-        // read arango constants
-        config = ConfigReader.getInstance();
-
         // init db
-        ArangoDB arangoDriver = DatabaseConnection.getDBConnection().getArangoDriver();
-        dbInstance = arangoDriver.db(config.getArangoConfig("db.name"));
+        ArangoDB arangoDriver = DatabaseConnection.getInstance().getArangoDriver();
+        dbInstance = arangoDriver.db(Configuration.getInstance().getArangoConfig("db.name"));
     }
 
     /**
@@ -59,11 +55,9 @@ public class ArangoHandler implements DatabaseHandler {
      * @return list of recommended job listings
      */
     public ArrayList<JobListing> getRecommendedJobListing(String userId) throws IOException {
-
         ArangoCursor<VPackSlice> userCursor = getUserById(userId);
         VPackSlice userSkills = userCursor.next().get("skills");
         //query for getting jobListing if there is a match between this jobListing and requesting user's skills
-        String jobsCollectionName = config.getArangoConfig("collection.jobs.name");
         String query = "FOR job IN jobs FILTER "
                 + "COUNT(INTERSECTION(@userSkills, job.requiredSkills)) != 0 "
                 + "RETURN job";
@@ -78,25 +72,19 @@ public class ArangoHandler implements DatabaseHandler {
     }
 
     public ArangoCursor<VPackSlice> getUserById(String userId) throws IOException {
-        String dbName = config.getArangoConfig("db.name");
-        String userCollectionName = config.getArangoConfig("collection.users.name");
         String query = "FOR u IN users FILTER "
                 + "u.userId == @userId "
                 + "RETURN u";
         Map<String, Object> bindVars = new MapBuilder().put("userId", userId).get();
-        ArangoDatabase db = DatabaseConnection.getDBConnection().getArangoDriver().db(dbName);
-        return db.query(query, bindVars, null, VPackSlice.class);
+        return dbInstance.query(query, bindVars, null, VPackSlice.class);
     }
 
     public ArangoCursor<VPackSlice> getArticleById(String postId) throws IOException {
-        String dbName = config.getArangoConfig("db.name");
-        String articlesCollectionName = config.getArangoConfig("collection.articles.name");
         String query = "FOR article IN articles FILTER "
                 + "article.postId == @postId "
                 + "RETURN article";
         Map<String, Object> bindVars = new MapBuilder().put("postId", postId).get();
-        ArangoDatabase db = DatabaseConnection.getDBConnection().getArangoDriver().db(dbName);
-        return db.query(query, bindVars, null, VPackSlice.class);
+        return dbInstance.query(query, bindVars, null, VPackSlice.class);
     }
 
 
@@ -108,7 +96,7 @@ public class ArangoHandler implements DatabaseHandler {
      */
     public ArrayList<Article> getTrendingArticles(String userId) throws IOException {
 
-        String articlesCollectionName = config.getArangoConfig("collection.articles.name");
+        Configuration config = Configuration.getInstance();
         int likesWeight = Integer.parseInt(config.getArangoConfig("weights.like"));
         int commentsWeight = Integer.parseInt(config.getArangoConfig("weights.comment"));
         int sharesWeight = Integer.parseInt(config.getArangoConfig("weights.share"));
