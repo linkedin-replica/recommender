@@ -21,7 +21,7 @@ public class DatabaseSeed {
     private DatabaseHandler dbHandler;
 
     public DatabaseSeed() throws FileNotFoundException, IOException {
-        config = new ConfigReader("arango_names");
+        config = ConfigReader.getInstance();
     }
 
 
@@ -46,8 +46,8 @@ public class DatabaseSeed {
     public static void insertUsers() throws IOException, ParseException {
 
         ArangoDB arangoDB = DatabaseConnection.getDBConnection().getArangoDriver();
-        String dbName = config.getConfig("db.name");
-        String collectionName = config.getConfig("collection.users.name");
+        String dbName = config.getArangoConfig("db.name");
+        String collectionName = config.getArangoConfig("collection.users.name");
         try {
             arangoDB.db(dbName).createCollection(collectionName);
         } catch (ArangoDBException exception) {
@@ -73,6 +73,7 @@ public class DatabaseSeed {
             userDocument.addAttribute("headline", userObject.get("headline"));
             userDocument.addAttribute("industry", userObject.get("industry"));
             userDocument.addAttribute("skills", userObject.get("skills"));
+            userDocument.addAttribute("friendsList", userObject.get("friendsList"));
             arangoDB.db(dbName).collection(collectionName).insertDocument(userDocument);
             System.out.println("New user document insert with key = " + userDocument.getId());
         }
@@ -89,8 +90,8 @@ public class DatabaseSeed {
     public static void insertArticles() throws IOException, ClassNotFoundException, SQLException, ParseException {
 
         ArangoDB arangoDB = DatabaseConnection.getDBConnection().getArangoDriver();
-        String dbName = config.getConfig("db.name");
-        String collectionName = config.getConfig("collection.articles.name");
+        String dbName = config.getArangoConfig("db.name");
+        String collectionName = config.getArangoConfig("collection.articles.name");
 
         try {
             arangoDB.db(dbName).
@@ -136,8 +137,8 @@ public class DatabaseSeed {
     public static void insertJobs() throws IOException, ClassNotFoundException, SQLException, ParseException {
 
         ArangoDB arangoDB = DatabaseConnection.getDBConnection().getArangoDriver();
-        String dbName = config.getConfig("db.name");
-        String collectionName = config.getConfig("collection.jobs.name");
+        String dbName = config.getArangoConfig("db.name");
+        String collectionName = config.getArangoConfig("collection.jobs.name");
         try {
             arangoDB.db(dbName).
                     createCollection(collectionName);
@@ -180,30 +181,8 @@ public class DatabaseSeed {
      * @throws SQLException
      */
     public static void deleteAllJobs() throws ArangoDBException, IOException {
-        String dbName = config.getConfig("db.name");
-        String collectionName = config.getConfig("collection.jobs.name");
-        try {
-            DatabaseConnection.getDBConnection().getArangoDriver().db(dbName).collection(collectionName).drop();
-        } catch (ArangoDBException exception) {
-            if (exception.getErrorNum() == 1228) {
-                System.out.println("Database not found");
-            }
-        }
-        System.out.println("Jobs collection is dropped");
-    }
-
-    /**
-     * Delete users collection from the database if it exists
-     *
-     * @throws ArangoDBException
-     * @throws FileNotFoundException
-     * @throws ClassNotFoundException
-     * @throws IOException
-     * @throws SQLException
-     */
-    public static void deleteAllUsers() throws ArangoDBException, IOException {
-        String dbName = config.getConfig("db.name");
-        String collectionName = config.getConfig("collection.users.name");
+        String dbName = config.getArangoConfig("db.name");
+        String collectionName = config.getArangoConfig("collection.jobs.name");
         try {
             DatabaseConnection.getDBConnection().getArangoDriver().db(dbName).collection(collectionName).drop();
         } catch (ArangoDBException exception) {

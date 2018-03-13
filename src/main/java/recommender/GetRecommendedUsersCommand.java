@@ -6,9 +6,9 @@ import models.User;
 import java.io.IOException;
 import java.util.*;
 
-public class getRecommendedUsersCommand extends Command {
+public class GetRecommendedUsersCommand extends Command {
 
-    public getRecommendedUsersCommand(HashMap<String, String> args) {
+    public GetRecommendedUsersCommand(HashMap<String, String> args) {
         super(args);
     }
 
