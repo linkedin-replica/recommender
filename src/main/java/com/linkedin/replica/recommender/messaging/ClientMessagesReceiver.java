@@ -14,7 +14,7 @@ import java.util.concurrent.TimeoutException;
 
 public class ClientMessagesReceiver {
     private Configuration configuration = Configuration.getInstance();
-    private RecommendationService notificationService = new RecommendationService();
+    private RecommendationService recommendationService = new RecommendationService();
     private final String QUEUE_NAME = configuration.getAppConfig("rabbitmq.queue.client");
     private final String RABBIT_MQ_IP = configuration.getAppConfig("rabbitmq.ip");
 
@@ -57,7 +57,7 @@ public class ClientMessagesReceiver {
                 // Call the service and form the response
                 LinkedHashMap<String, Object> response = new LinkedHashMap<>();
                 try {
-                    Object results = notificationService.serve(commandName, args);
+                    Object results = recommendationService.serve(commandName, args);
                     if (results != null)
                         response.put("results", results);
                     response.put("statusCode", 200);
