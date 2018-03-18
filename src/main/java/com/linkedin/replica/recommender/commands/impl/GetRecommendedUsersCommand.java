@@ -1,13 +1,14 @@
-package recommender;
+package com.linkedin.replica.recommender.commands.impl;
 
-import models.Command;
-import models.User;
+import com.linkedin.replica.recommender.commands.Command;
+import com.linkedin.replica.recommender.models.User;
+import com.linkedin.replica.recommender.database.handlers.RecommendationHandler;
 
 import java.io.IOException;
 import java.util.*;
 
 public class GetRecommendedUsersCommand extends Command {
-
+    private RecommendationHandler recommendationHandler;
     public GetRecommendedUsersCommand(HashMap<String, String> args) {
         super(args);
     }
@@ -18,6 +19,7 @@ public class GetRecommendedUsersCommand extends Command {
      */
     public LinkedHashMap<String, Object> execute() throws IOException {
         String userId = this.args.get("userId");
+        recommendationHandler = (RecommendationHandler) dbHandler;
         TreeMap<User, Integer> friendsOfFriends = recommendFriendsOfFriends(userId);
         ArrayList<User> recommendedUsers = sortFriendsOfFriends(friendsOfFriends);
         LinkedHashMap<String, Object> results = new LinkedHashMap<String, Object>();
@@ -33,12 +35,12 @@ public class GetRecommendedUsersCommand extends Command {
      * @throws IOException if the congif file is not found
      */
     public TreeMap<User, Integer> recommendFriendsOfFriends(String userId) throws IOException {
-        ArrayList<User> friends = this.dbHandler.getFriendsOfUser(userId);
+        ArrayList<User> friends = recommendationHandler.getFriendsOfUser(userId);
         TreeMap<User, Integer> friendsOfFriends = new TreeMap<User, Integer>();
 
         for (User friend : friends) {
             String friendId = friend.getUserId();
-            ArrayList<User> friendsOfFriend = this.dbHandler.getFriendsOfUser(friendId);
+            ArrayList<User> friendsOfFriend = recommendationHandler.getFriendsOfUser(friendId);
             for (User friendOfFriend : friendsOfFriend) {
                 if (friendOfFriend.getUserId().equals(userId))
                     continue;

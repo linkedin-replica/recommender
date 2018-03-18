@@ -1,4 +1,4 @@
-package models;
+package com.linkedin.replica.recommender.models;
 
 public class Article {
 
