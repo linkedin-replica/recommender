@@ -11,16 +11,16 @@ import com.linkedin.replica.recommender.models.JobListing;
 import com.linkedin.replica.recommender.models.User;
 import com.linkedin.replica.recommender.utils.Configuration;
 import com.linkedin.replica.recommender.database.DatabaseConnection;
-import com.linkedin.replica.recommender.database.handlers.RecommendationHandler;
+import com.linkedin.replica.recommender.database.handlers.RecommendationDatabaseHandler;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class ArangoHandler implements RecommendationHandler {
+public class ArangoDatabaseHandler implements RecommendationDatabaseHandler {
     private ArangoDatabase dbInstance;
 
-    public ArangoHandler() throws IOException {
+    public ArangoDatabaseHandler() throws IOException {
         // init db
         ArangoDB arangoDriver = DatabaseConnection.getInstance().getArangoDriver();
         dbInstance = arangoDriver.db(Configuration.getInstance().getArangoConfig("db.name"));
