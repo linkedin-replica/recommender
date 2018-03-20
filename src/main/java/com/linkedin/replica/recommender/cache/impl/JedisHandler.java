@@ -7,12 +7,13 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 public class JedisHandler implements RecommendationHandler {
     private JedisPool cachepool;
     private Configuration configuration = Configuration.getInstance();
-    private String CACHE_USERS = configuration.getRedisConfig("cache.users.name");
+    private String CACHE_FRIENDS = configuration.getRedisConfig("cache.friends.name");
     private String CACHE_JOBS = configuration.getRedisConfig("cache.jobs.name");
     private String CACHE_ARTICLES = configuration.getRedisConfig("cache.articles.name");
 
@@ -29,8 +30,18 @@ public class JedisHandler implements RecommendationHandler {
      */
     @Override
     public void saveRecommendedJobs(String userId, LinkedHashMap<String, Object> jobs) {
+        /**
+         * Gets a new instance from the cachepool
+         */
         Jedis cacheInstance = cachepool.getResource();
-        String key = CACHE_JOBS + userId;
+        /**
+         * Key is cache.name:userId
+         */
+        String key = CACHE_JOBS + ":" + userId;
+        /**
+         * Set the jobs hashmap of the user
+         */
+        cacheInstance.hmset(key, (HashMap) jobs);
     }
 
     /**
@@ -42,9 +53,18 @@ public class JedisHandler implements RecommendationHandler {
      */
     @Override
     public void saveRecommendedArticles(String userId, LinkedHashMap<String, Object> articles) {
+        /**
+         * Gets a new instance from the cachepool
+         */
         Jedis cacheInstance = cachepool.getResource();
-        String key = CACHE_ARTICLES + userId;
-
+        /**
+         * Key is cache.name:userId
+         */
+        String key = CACHE_ARTICLES + ":" + userId;
+        /**
+         * Set the articles hashmap of the user
+         */
+        cacheInstance.hmset(key, (HashMap) articles);
     }
 
     /**
@@ -56,10 +76,17 @@ public class JedisHandler implements RecommendationHandler {
      */
     @Override
     public void saveRecommendedFriends(String userId, LinkedHashMap<String, Object> friends) {
+        /**
+         * Gets a new instance from the cachepool
+         */
         Jedis cacheInstance = cachepool.getResource();
-        String key = CACHE_USERS + userId;
-        if(!cacheInstance.exists(key)){
-
-        }
+        /**
+         * Key is cache.name:userId
+         */
+        String key = CACHE_FRIENDS + ":" + userId;
+        /**
+         * Set the friends hashmap of the user
+         */
+        cacheInstance.hmset(key, (HashMap) friends);
     }
 }
