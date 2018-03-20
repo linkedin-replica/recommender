@@ -24,7 +24,8 @@ public class DatabaseSeed {
     }
 
     public static void init() throws IOException, ParseException, SQLException, ClassNotFoundException {
-        Configuration.init("src/main/resources/config/app.config", "src/main/resources/config/arango.test.config", "src/main/resources/config/commands.config");
+        Configuration.init("src/main/resources/config/app.config", "src/main/resources/config/arango.test.config",
+                "src/main/resources/config/commands.config", "src/main/resources/config/redis.config");
         config = Configuration.getInstance();
         String dbName = config.getArangoConfig("db.name");
         DatabaseConnection.init();

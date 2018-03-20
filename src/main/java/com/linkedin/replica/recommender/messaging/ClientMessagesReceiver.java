@@ -58,7 +58,7 @@ public class ClientMessagesReceiver {
                 // Call the service and form the response
                 LinkedHashMap<String, Object> response = new LinkedHashMap<>();
                 try {
-                    Object results = recommendationService.serve(commandName, args, toBeCached);
+                    Object results = recommendationService.serve(commandName, args);
                     if (results != null)
                         response.put("results", results);
                     response.put("statusCode", 200);
