@@ -69,4 +69,6 @@ public class Configuration {
         return redisConfig.getProperty(key);
     }
 
+    public String getCommandsConfig(String key) { return commandConfig.getProperty(key); }
+
 }
