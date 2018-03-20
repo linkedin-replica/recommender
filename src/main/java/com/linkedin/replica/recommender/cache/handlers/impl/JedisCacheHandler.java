@@ -14,9 +14,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Set;
 
 public class JedisCacheHandler implements RecommendationCacheHandler {
-    private Gson gson;
+    private static Gson gson;
     private JedisPool cachepool;
     private Configuration configuration = Configuration.getInstance();
     private String CACHE_FRIENDS = configuration.getRedisConfig("cache.friends.name");
@@ -48,11 +49,8 @@ public class JedisCacheHandler implements RecommendationCacheHandler {
         /**
          * Set the jobs hashmap of the user
          */
-        ArrayList<JobListing> jobListings = (ArrayList<JobListing>) jobs;
-        for (JobListing job:jobListings) {
-            String jsonObj = gson.toJson(job);
-            cacheInstance.sadd(key, jsonObj);
-        }
+        ArrayList<Object> jobListings = (ArrayList<Object>) jobs;
+        addList(jobListings, key, cacheInstance);
     }
 
     /**
@@ -75,11 +73,8 @@ public class JedisCacheHandler implements RecommendationCacheHandler {
         /**
          * Set the articles hashmap of the user
          */
-        ArrayList<Article> articlesList = (ArrayList<Article>) articles;
-        for (Article article: articlesList) {
-            String jsonObj = gson.toJson(article);
-            cacheInstance.sadd(key, jsonObj);
-        }
+        ArrayList<Object> articlesList = (ArrayList<Object>) articles;
+        addList(articlesList, key, cacheInstance);
     }
 
     /**
@@ -102,10 +97,45 @@ public class JedisCacheHandler implements RecommendationCacheHandler {
         /**
          * Set the friends hashmap of the user
          */
-        ArrayList<User> friendsList = (ArrayList<User>) friends;
-        for (User user: friendsList) {
-            String jsonObj = gson.toJson(user);
+        ArrayList<Object> friendsList = (ArrayList<Object>) friends;
+        addList(friendsList, key, cacheInstance);
+    }
+
+    private static void addList(ArrayList<Object> objectsList, String key, Jedis cacheInstance) {
+        for(Object object : objectsList) {
+            String jsonObj = gson.toJson(object);
             cacheInstance.sadd(key, jsonObj);
         }
     }
+
+    public static ArrayList<JobListing> getJobsList(String key, Jedis cacheInstance) {
+        ArrayList<JobListing> jobListings = new ArrayList<JobListing>();
+        Set<String> cacheResults = cacheInstance.smembers(key);
+        for (String result : cacheResults) {
+            JobListing jobListing = gson.fromJson(result, JobListing.class);
+            jobListings.add(jobListing);
+        }
+        return jobListings;
+    }
+
+    public static ArrayList<Article> getArticlesList(String key, Jedis cacheInstance) {
+        ArrayList<Article> articles = new ArrayList<Article>();
+        Set<String> cacheResults = cacheInstance.smembers(key);
+        for (String result : cacheResults) {
+            Article cachedArticle = gson.fromJson(result, Article.class);
+            articles.add(cachedArticle);
+        }
+        return articles;
+    }
+
+    public static ArrayList<User> getUsersList(String key, Jedis cacheInstance) {
+        ArrayList<User> users = new ArrayList<User>();
+        Set<String> cacheResults = cacheInstance.smembers(key);
+        for (String result : cacheResults) {
+            User cachedUser = gson.fromJson(result, User.class);
+            users.add(cachedUser);
+        }
+        return users;
+    }
+
 }
