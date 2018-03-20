@@ -12,13 +12,16 @@ public class Configuration {
     private Properties commandConfig = new Properties();
     private Properties appConfig = new Properties();
     private Properties arangoConfig = new Properties();
+    private Properties redisConfig = new Properties();
 
     private static Configuration instance;
 
-    private Configuration(String appConfigPath, String arangoConfigPath, String commandsConfigPath) throws IOException {
+    private Configuration(String appConfigPath, String arangoConfigPath, String commandsConfigPath, String redisConfigPath) throws IOException {
         populateWithConfig(appConfigPath, appConfig);
         populateWithConfig(arangoConfigPath, arangoConfig);
         populateWithConfig(commandsConfigPath, commandConfig);
+        populateWithConfig(redisConfigPath, redisConfig);
+
     }
 
     private static void populateWithConfig(String configFilePath, Properties properties) throws IOException {
@@ -27,8 +30,8 @@ public class Configuration {
         inputStream.close();
     }
 
-    public static void init(String appConfigPath, String arangoConfigPath, String commandsConfigPath) throws IOException {
-        instance = new Configuration(appConfigPath, arangoConfigPath, commandsConfigPath);
+    public static void init(String appConfigPath, String arangoConfigPath, String commandsConfigPath, String redisConfigPath) throws IOException {
+        instance = new Configuration(appConfigPath, arangoConfigPath, commandsConfigPath, redisConfigPath);
     }
 
     public static Configuration getInstance() throws IOException {
@@ -54,4 +57,9 @@ public class Configuration {
     public String getArangoConfig(String key) {
         return arangoConfig.getProperty(key);
     }
+
+    public String getRedisConfig(String key) {
+        return redisConfig.getProperty(key);
+    }
+
 }

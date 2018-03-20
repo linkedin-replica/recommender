@@ -10,9 +10,27 @@ public class Cache {
     private Configuration configuration = Configuration.getInstance();
     private final String REDIS_IP = configuration.getAppConfig("redis.ip");
     private final int REDIS_PORT = Integer.parseInt(configuration.getAppConfig("redis.port"));
-    protected static JedisPool redisPool;
+    private JedisPool redisPool;
+    private static Cache cache;
 
-    public Cache() throws IOException {
+    private Cache() throws IOException {
         redisPool = new JedisPool(new JedisPoolConfig(), REDIS_IP, REDIS_PORT);
+    }
+
+    /**
+     * Get a singleton Cache instance
+     *
+     * @return The Cache instance
+     */
+    public static Cache getInstance() throws IOException {
+        return cache;
+    }
+
+    public static void init() throws IOException {
+        cache = new Cache();
+    }
+
+    public JedisPool getRedisPool() {
+        return redisPool;
     }
 }
