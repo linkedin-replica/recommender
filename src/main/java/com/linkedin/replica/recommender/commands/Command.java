@@ -22,7 +22,7 @@ public abstract class Command {
      *
      * @return The output (if any) of the command
      */
-    public abstract LinkedHashMap<String, Object> execute() throws IOException;
+    public abstract Object execute() throws IOException;
 
     /**
      * Set the configured db handler

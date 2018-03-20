@@ -20,7 +20,7 @@ public class GetRecommendedUsersCommand extends Command {
      * Execute the command of recommending users to a certain user
      * @return The output (if any) of the command
      */
-    public LinkedHashMap<String, Object> execute() throws IOException {
+    public Object execute() throws IOException {
         String userId = this.args.get("userId");
         recommendationDatabaseHandler = (RecommendationDatabaseHandler) dbHandler;
         TreeMap<User, Integer> friendsOfFriends = recommendFriendsOfFriends(userId);
@@ -33,7 +33,7 @@ public class GetRecommendedUsersCommand extends Command {
             recommendationCacheHandler = (RecommendationCacheHandler) cacheHandler;
             recommendationCacheHandler.saveRecommendedFriends(userId, results);
         }
-        return results;
+        return recommendedUsers;
     }
 
     /**
