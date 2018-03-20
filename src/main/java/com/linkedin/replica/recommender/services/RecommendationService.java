@@ -18,7 +18,7 @@ public class RecommendationService {
         config = Configuration.getInstance();
     }
 
-    public LinkedHashMap<String, Object> serve(String commandName, HashMap<String, String> args) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, IOException {
+    public LinkedHashMap<String, Object> serve(String commandName, HashMap<String, String> args, boolean toBeCached) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, IOException {
         Class<?> commandClass = config.getCommandClass(commandName);
         Constructor constructor = commandClass.getConstructor(HashMap.class);
         Command command = (Command) constructor.newInstance(args);
@@ -30,7 +30,8 @@ public class RecommendationService {
         CacheHandler cacheHandler = (CacheHandler) CacheHandlerClass.newInstance();
 
         command.setDbHandler(dbHandler);
-        command.setCacheHandler(cacheHandler);
+        if(toBeCached)
+            command.setCacheHandler(cacheHandler);
 
         return command.execute();
     }

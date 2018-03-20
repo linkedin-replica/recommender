@@ -49,6 +49,7 @@ public class ClientMessagesReceiver {
                 // Extract the request arguments
                 JsonObject object = new JsonParser().parse(new String(body)).getAsJsonObject();
                 String commandName = object.get("commandName").getAsString();
+                boolean toBeCached = object.get("isCached").getAsBoolean();
                 HashMap<String, String> args = new HashMap<>();
                 for (String key : object.keySet())
                     if (!key.equals("commandName"))
@@ -57,7 +58,7 @@ public class ClientMessagesReceiver {
                 // Call the service and form the response
                 LinkedHashMap<String, Object> response = new LinkedHashMap<>();
                 try {
-                    Object results = recommendationService.serve(commandName, args);
+                    Object results = recommendationService.serve(commandName, args, toBeCached);
                     if (results != null)
                         response.put("results", results);
                     response.put("statusCode", 200);
