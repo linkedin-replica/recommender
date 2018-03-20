@@ -1,5 +1,6 @@
 package com.linkedin.replica.recommender.services;
 
+import com.linkedin.replica.recommender.cache.handlers.CacheHandler;
 import com.linkedin.replica.recommender.commands.Command;
 import com.linkedin.replica.recommender.database.handlers.DatabaseHandler;
 import com.linkedin.replica.recommender.utils.Configuration;
@@ -24,7 +25,9 @@ public class RecommendationService {
 
         Class<?> databaseHandlerClass = config.getDatabaseHandlerClass(commandName);
         DatabaseHandler dbHandler = (DatabaseHandler) databaseHandlerClass.newInstance();
+        DatabaseHandler cacheHandler = (DatabaseHandler) databaseHandlerClass.newInstance();
 
+        command.setDbHandler(dbHandler);
         command.setDbHandler(dbHandler);
 
         return command.execute();

@@ -1,5 +1,6 @@
 package com.linkedin.replica.recommender.utils;
 
+import com.linkedin.replica.recommender.cache.handlers.CacheHandler;
 import com.linkedin.replica.recommender.database.handlers.DatabaseHandler;
 import com.linkedin.replica.recommender.commands.Command;
 

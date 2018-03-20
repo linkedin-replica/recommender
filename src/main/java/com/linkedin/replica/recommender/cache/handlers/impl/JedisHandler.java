@@ -1,4 +1,4 @@
-package com.linkedin.replica.recommender.cache.impl;
+package com.linkedin.replica.recommender.cache.handlers.impl;
 
 import com.linkedin.replica.recommender.cache.Cache;
 import com.linkedin.replica.recommender.cache.handlers.RecommendationHandler;
