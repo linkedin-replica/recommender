@@ -1,7 +1,7 @@
 package com.linkedin.replica.recommender.cache.handlers.impl;
 
 import com.linkedin.replica.recommender.cache.Cache;
-import com.linkedin.replica.recommender.cache.handlers.RecommendationHandler;
+import com.linkedin.replica.recommender.cache.handlers.RecommendationCacheHandler;
 import com.linkedin.replica.recommender.utils.Configuration;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -10,14 +10,14 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-public class JedisHandler implements RecommendationHandler {
+public class JedisCacheHandler implements RecommendationCacheHandler {
     private JedisPool cachepool;
     private Configuration configuration = Configuration.getInstance();
     private String CACHE_FRIENDS = configuration.getRedisConfig("cache.friends.name");
     private String CACHE_JOBS = configuration.getRedisConfig("cache.jobs.name");
     private String CACHE_ARTICLES = configuration.getRedisConfig("cache.articles.name");
 
-    public JedisHandler() throws IOException {
+    public JedisCacheHandler() throws IOException {
         cachepool = Cache.getInstance().getRedisPool();
     }
 

@@ -47,13 +47,13 @@ public class Configuration {
 
     public Class getDatabaseHandlerClass(String commandName) throws ClassNotFoundException {
         String handlerPackageName = DatabaseHandler.class.getPackage().getName() + ".impl";
-        String handlerClassPath = handlerPackageName + "." + commandConfig.get(commandName + ".handler");
+        String handlerClassPath = handlerPackageName + "." + commandConfig.get(commandName + ".db.handler");
         return Class.forName(handlerClassPath);
     }
 
-    public Class getCacheHandlerClass() throws ClassNotFoundException {
+    public Class getCacheHandlerClass(String commandName) throws ClassNotFoundException {
         String handlerPackageName = CacheHandler.class.getPackage().getName() + ".impl";
-        String handlerClassPath = handlerPackageName + "." + appConfig.get("cache.handler");
+        String handlerClassPath = handlerPackageName + "." + commandConfig.get(commandName + ".cache.handler");
         return Class.forName(handlerClassPath);
     }
 

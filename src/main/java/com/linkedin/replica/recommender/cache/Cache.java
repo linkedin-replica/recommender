@@ -33,4 +33,9 @@ public class Cache {
     public JedisPool getRedisPool() {
         return redisPool;
     }
+
+    /** Destroys pool */
+    public void destroyRedisPool(){
+        redisPool.destroy();
+    }
 }

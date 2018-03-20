@@ -2,7 +2,7 @@ package com.linkedin.replica.recommender.cache.handlers;
 
 import java.util.LinkedHashMap;
 
-public interface RecommendationHandler extends CacheHandler {
+public interface RecommendationCacheHandler extends CacheHandler {
 
 
     /**

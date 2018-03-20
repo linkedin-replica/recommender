@@ -1,14 +1,17 @@
 package com.linkedin.replica.recommender.commands.impl;
 
+import com.linkedin.replica.recommender.cache.handlers.RecommendationCacheHandler;
 import com.linkedin.replica.recommender.commands.Command;
 import com.linkedin.replica.recommender.models.User;
-import com.linkedin.replica.recommender.database.handlers.RecommendationHandler;
+import com.linkedin.replica.recommender.database.handlers.RecommendationDatabaseHandler;
 
 import java.io.IOException;
 import java.util.*;
 
 public class GetRecommendedUsersCommand extends Command {
-    private RecommendationHandler recommendationHandler;
+    private RecommendationDatabaseHandler recommendationDatabaseHandler;
+    private RecommendationCacheHandler recommendationCacheHandler;
+
     public GetRecommendedUsersCommand(HashMap<String, String> args) {
         super(args);
     }
@@ -19,11 +22,17 @@ public class GetRecommendedUsersCommand extends Command {
      */
     public LinkedHashMap<String, Object> execute() throws IOException {
         String userId = this.args.get("userId");
-        recommendationHandler = (RecommendationHandler) dbHandler;
+        recommendationDatabaseHandler = (RecommendationDatabaseHandler) dbHandler;
         TreeMap<User, Integer> friendsOfFriends = recommendFriendsOfFriends(userId);
         ArrayList<User> recommendedUsers = sortFriendsOfFriends(friendsOfFriends);
         LinkedHashMap<String, Object> results = new LinkedHashMap<String, Object>();
         results.put("result", recommendedUsers);
+
+        Boolean toBeCached = Boolean.parseBoolean(this.args.get("toBeCached"));
+        if(toBeCached){
+            recommendationCacheHandler = (RecommendationCacheHandler) cacheHandler;
+            recommendationCacheHandler.saveRecommendedFriends(userId, results);
+        }
         return results;
     }
 
@@ -35,12 +44,12 @@ public class GetRecommendedUsersCommand extends Command {
      * @throws IOException if the congif file is not found
      */
     public TreeMap<User, Integer> recommendFriendsOfFriends(String userId) throws IOException {
-        ArrayList<User> friends = recommendationHandler.getFriendsOfUser(userId);
+        ArrayList<User> friends = recommendationDatabaseHandler.getFriendsOfUser(userId);
         TreeMap<User, Integer> friendsOfFriends = new TreeMap<User, Integer>();
 
         for (User friend : friends) {
             String friendId = friend.getUserId();
-            ArrayList<User> friendsOfFriend = recommendationHandler.getFriendsOfUser(friendId);
+            ArrayList<User> friendsOfFriend = recommendationDatabaseHandler.getFriendsOfUser(friendId);
             for (User friendOfFriend : friendsOfFriend) {
                 if (friendOfFriend.getUserId().equals(userId))
                     continue;
