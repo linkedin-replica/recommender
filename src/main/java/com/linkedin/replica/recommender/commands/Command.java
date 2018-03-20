@@ -1,6 +1,7 @@
 package com.linkedin.replica.recommender.commands;
 
 
+import com.linkedin.replica.recommender.cache.handlers.CacheHandler;
 import com.linkedin.replica.recommender.database.handlers.DatabaseHandler;
 
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.util.LinkedHashMap;
 public abstract class Command {
     protected HashMap<String, String> args;
     protected DatabaseHandler dbHandler;
+    protected CacheHandler cacheHandler;
 
     public Command(HashMap<String, String> args) {
         this.args = args;
@@ -30,6 +32,13 @@ public abstract class Command {
     public void setDbHandler(DatabaseHandler dbHandler) {
         this.dbHandler = dbHandler;
     }
+
+    /**
+     * Set the configured cache handler
+     *
+     * @param cacheHandler: The configured db handler
+     */
+    public void setCacheHandler(CacheHandler cacheHandler) { this.cacheHandler = cacheHandler; }
 
     protected void validateArgs(String[] requiredArgs) {
         for (String arg : requiredArgs)

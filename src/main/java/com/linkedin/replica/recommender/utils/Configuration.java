@@ -51,6 +51,12 @@ public class Configuration {
         return Class.forName(handlerClassPath);
     }
 
+    public Class getCacheHandlerClass() throws ClassNotFoundException {
+        String handlerPackageName = CacheHandler.class.getPackage().getName() + ".impl";
+        String handlerClassPath = handlerPackageName + "." + appConfig.get("cache.handler");
+        return Class.forName(handlerClassPath);
+    }
+
     public String getAppConfig(String key) {
         return appConfig.getProperty(key);
     }
