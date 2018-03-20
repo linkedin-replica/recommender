@@ -18,9 +18,9 @@ public class Cache {
     }
 
     /**
-     * Get a singleton Cache instance
+     * Get a singleton cache instance
      *
-     * @return The Cache instance
+     * @return The cache instance
      */
     public static Cache getInstance() throws IOException {
         return cache;
