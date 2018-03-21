@@ -9,11 +9,11 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 public abstract class Command {
-    protected HashMap<String, String> args;
+    protected HashMap<String, Object> args;
     protected DatabaseHandler dbHandler;
     protected CacheHandler cacheHandler;
 
-    public Command(HashMap<String, String> args) {
+    public Command(HashMap<String, Object> args) {
         this.args = args;
     }
 
@@ -22,7 +22,7 @@ public abstract class Command {
      *
      * @return The output (if any) of the command
      */
-    public abstract Object execute() throws IOException;
+    public abstract Object execute() throws IOException, NoSuchMethodException, IllegalAccessException;
 
     /**
      * Set the configured db handler

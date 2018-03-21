@@ -12,7 +12,7 @@ public class GetRecommendedUsersCommand extends Command {
     private RecommendationDatabaseHandler recommendationDatabaseHandler;
     private RecommendationCacheHandler recommendationCacheHandler;
 
-    public GetRecommendedUsersCommand(HashMap<String, String> args) {
+    public GetRecommendedUsersCommand(HashMap<String, Object> args) {
         super(args);
     }
 
@@ -21,12 +21,12 @@ public class GetRecommendedUsersCommand extends Command {
      * @return The output (if any) of the command
      */
     public Object execute() throws IOException {
-        String userId = this.args.get("userId");
+        String userId = this.args.get("userId").toString();
         recommendationDatabaseHandler = (RecommendationDatabaseHandler) dbHandler;
         TreeMap<User, Integer> friendsOfFriends = recommendFriendsOfFriends(userId);
         ArrayList<User> recommendedUsers = sortFriendsOfFriends(friendsOfFriends);
 
-        Boolean toBeCached = Boolean.parseBoolean(this.args.get("toBeCached"));
+        boolean toBeCached = (boolean) this.args.get("toBeCached");
         if(toBeCached){
             recommendationCacheHandler = (RecommendationCacheHandler) cacheHandler;
             recommendationCacheHandler.saveRecommendedFriends(userId, recommendedUsers);

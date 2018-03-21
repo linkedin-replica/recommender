@@ -19,18 +19,17 @@ public class RecommendJobListingCommand extends Command {
     private RecommendationDatabaseHandler recommendationDatabaseHandler;
     private RecommendationCacheHandler recommendationCacheHandler;
 
-    public RecommendJobListingCommand(HashMap<String, String> args) {
+    public RecommendJobListingCommand(HashMap<String, Object> args) {
         super(args);
     }
 
     @Override
     public Object execute() throws IOException {
-        LinkedHashMap<String, Object> results = new LinkedHashMap<>();
-        String userId = this.args.get("userId");
+        String userId = this.args.get("userId").toString();
         recommendationDatabaseHandler = (RecommendationDatabaseHandler) dbHandler;
         // call dbHandler to get recommendedJobs and return results in the results map as key-value pair
         ArrayList<JobListing> jobListings = recommendationDatabaseHandler.getRecommendedJobListing(userId);
-        Boolean toBeCached = Boolean.parseBoolean(this.args.get("toBeCached"));
+        boolean toBeCached = (boolean) this.args.get("toBeCached");
 
         if(toBeCached){
             recommendationCacheHandler = (RecommendationCacheHandler) cacheHandler;
