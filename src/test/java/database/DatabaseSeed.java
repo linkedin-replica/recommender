@@ -143,7 +143,7 @@ public class DatabaseSeed {
         for (Object job : jobs) {
             JSONObject jobObject = (JSONObject) job;
             jobDocument = new BaseDocument();
-
+            jobDocument.addAttribute("jobId", jobObject.get("jobId"));
             jobDocument.addAttribute("positionName", jobObject.get("positionName"));
             jobDocument.addAttribute("companyName", jobObject.get("companyName"));
             jobDocument.addAttribute("companyId", jobObject.get("companyId"));
