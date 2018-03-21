@@ -4,7 +4,7 @@ import java.nio.file.InvalidPathException;
 import java.util.LinkedHashMap;
 
 import com.google.gson.JsonObject;
-import com.linkedin.replica.recommender.exceptions.RecommenderException;
+import com.linkedin.replica.recommender.exceptions.BadRequestException;
 import com.linkedin.replica.recommender.services.ControllerService;
 
 import io.netty.channel.ChannelHandlerContext;
@@ -47,7 +47,7 @@ public class RequestProcessingHandler extends ChannelInboundHandlerAdapter {
             responseBody.put("code", HttpResponseStatus.NOT_FOUND.code());
             responseBody.put("type", HttpResponseStatus.NOT_FOUND);
         } else {
-            if (cause instanceof RecommenderException) {
+            if (cause instanceof BadRequestException) {
                 responseBody.put("code", HttpResponseStatus.BAD_REQUEST.code());
                 responseBody.put("type", HttpResponseStatus.BAD_REQUEST);
             } else {

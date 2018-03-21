@@ -3,10 +3,10 @@ package com.linkedin.replica.recommender.commands;
 
 import com.linkedin.replica.recommender.cache.handlers.CacheHandler;
 import com.linkedin.replica.recommender.database.handlers.DatabaseHandler;
+import com.linkedin.replica.recommender.exceptions.BadRequestException;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 
 public abstract class Command {
     protected HashMap<String, Object> args;
@@ -44,7 +44,7 @@ public abstract class Command {
         for (String arg : requiredArgs)
             if (!args.containsKey(arg)) {
                 String exceptionMsg = String.format("Cannot execute command. %s argument is missing", arg);
-                throw new IllegalArgumentException(exceptionMsg);
+                throw new BadRequestException(exceptionMsg);
             }
     }
 }

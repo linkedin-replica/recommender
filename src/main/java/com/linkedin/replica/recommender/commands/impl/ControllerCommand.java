@@ -18,7 +18,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.linkedin.replica.recommender.commands.Command;
 import com.linkedin.replica.recommender.utils.Configuration;
-import com.linkedin.replica.recommender.exceptions.RecommenderException;
+import com.linkedin.replica.recommender.exceptions.BadRequestException;
 import com.linkedin.replica.recommender.services.Workers;
 
 public class ControllerCommand extends Command {
@@ -39,7 +39,7 @@ public class ControllerCommand extends Command {
         try {
             method.invoke(null, val);
         } catch (InvocationTargetException ex) {
-            throw new RecommenderException(ex.getTargetException().getMessage());
+            throw new BadRequestException(ex.getTargetException().getMessage());
         }
         return null;
     }
@@ -51,7 +51,7 @@ public class ControllerCommand extends Command {
      */
     public static void setMaxThreadCount(Object val) throws IOException {
         if (val == null || !((JsonPrimitive) val).isNumber())
-            throw new RecommenderException(String.format("Invalid parameters : %s. expected an integer representing maximum number of threads", val));
+            throw new BadRequestException(String.format("Invalid parameters : %s. expected an integer representing maximum number of threads", val));
 
         int maxThreadCount = ((JsonPrimitive) val).getAsInt();
         config.setAppConfig("app.max_thread_count", maxThreadCount + "");
@@ -67,7 +67,7 @@ public class ControllerCommand extends Command {
      */
     public static void setMaxDBConnectionsCount(Object val) {
         if (val == null || !((JsonPrimitive) val).isNumber())
-            throw new RecommenderException(String.format("Invalid parameters : %s. expected an integer representing maximum number of DB connections", val));
+            throw new BadRequestException(String.format("Invalid parameters : %s. expected an integer representing maximum number of DB connections", val));
 
         int maxDBConnectionCount = ((JsonPrimitive) val).getAsInt();
         config.setAppConfig("app.max_db_connections_count", maxDBConnectionCount + "");
@@ -192,7 +192,7 @@ public class ControllerCommand extends Command {
      */
     public static void setErrorReportingLevel(Object val) {
         if (val == null || !((JsonPrimitive) val).isNumber())
-            throw new RecommenderException(String.format("Invalid parameters : %s. expected an integer representing logging level.", val));
+            throw new BadRequestException(String.format("Invalid parameters : %s. expected an integer representing logging level.", val));
 
         int loggingLevel = ((JsonPrimitive) val).getAsInt();
         config.setAppConfig("app.error_reporting_level", loggingLevel + "");
@@ -213,7 +213,7 @@ public class ControllerCommand extends Command {
     private static void validate(JsonObject obj, String... args) {
         for (String arg : args) {
             if (obj.get(arg) == null)
-                throw new RecommenderException(String.format("Invalid parameters : %s. expected : %s", obj.keySet().toString(), Arrays.toString(args)));
+                throw new BadRequestException(String.format("Invalid parameters : %s. expected : %s", obj.keySet().toString(), Arrays.toString(args)));
         }
     }
 

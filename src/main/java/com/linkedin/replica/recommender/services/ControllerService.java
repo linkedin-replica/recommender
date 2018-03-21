@@ -8,7 +8,7 @@ import java.util.Iterator;
 import com.google.gson.JsonObject;
 import com.linkedin.replica.recommender.commands.impl.ControllerCommand;
 import com.linkedin.replica.recommender.utils.Configuration;
-import com.linkedin.replica.recommender.exceptions.RecommenderException;
+import com.linkedin.replica.recommender.exceptions.BadRequestException;
 
 public class ControllerService {
     public static void serve(JsonObject body) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
@@ -42,7 +42,7 @@ public class ControllerService {
         // get mapping configuration key
         String key = config.getControllerConfig("controller.request.body." + requestBodykey.toLowerCase());
         if (key == null)
-            throw new RecommenderException(String.format("Invalid key: %s", requestBodykey));
+            throw new BadRequestException(String.format("Invalid key: %s", requestBodykey));
 
         // ControllerService method name
         return config.getControllerConfig(key);
