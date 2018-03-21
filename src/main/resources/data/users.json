@@ -37,6 +37,7 @@
   },
   {
     "userId": "1",
+    "friendsList": [],
     "firstName": "Ahmed",
     "lastName": "Soliman",
     "headline": "Junior Data Wrangling Engineer",
@@ -45,6 +46,7 @@
   },
   {
     "userId": "2",
+    "friendsList": [],
     "firstName": "John",
     "lastName": "Bob",
     "headline": "Truck Driver",
@@ -53,6 +55,7 @@
   },
   {
     "userId": "3",
+    "friendsList": [],
     "firstName": "Mark",
     "lastName": "Lopez",
     "headline": "Student",

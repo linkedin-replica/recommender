@@ -1,17 +1,19 @@
 package com.linkedin.replica.recommender.commands;
 
 
+import com.linkedin.replica.recommender.cache.handlers.CacheHandler;
 import com.linkedin.replica.recommender.database.handlers.DatabaseHandler;
+import com.linkedin.replica.recommender.exceptions.BadRequestException;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 
 public abstract class Command {
-    protected HashMap<String, String> args;
+    protected HashMap<String, Object> args;
     protected DatabaseHandler dbHandler;
+    protected CacheHandler cacheHandler;
 
-    public Command(HashMap<String, String> args) {
+    public Command(HashMap<String, Object> args) {
         this.args = args;
     }
 
@@ -20,7 +22,7 @@ public abstract class Command {
      *
      * @return The output (if any) of the command
      */
-    public abstract LinkedHashMap<String, Object> execute() throws IOException;
+    public abstract Object execute() throws IOException, NoSuchMethodException, IllegalAccessException;
 
     /**
      * Set the configured db handler
@@ -31,11 +33,18 @@ public abstract class Command {
         this.dbHandler = dbHandler;
     }
 
+    /**
+     * Set the configured cache handler
+     *
+     * @param cacheHandler: The configured db handler
+     */
+    public void setCacheHandler(CacheHandler cacheHandler) { this.cacheHandler = cacheHandler; }
+
     protected void validateArgs(String[] requiredArgs) {
         for (String arg : requiredArgs)
             if (!args.containsKey(arg)) {
                 String exceptionMsg = String.format("Cannot execute command. %s argument is missing", arg);
-                throw new IllegalArgumentException(exceptionMsg);
+                throw new BadRequestException(exceptionMsg);
             }
     }
 }

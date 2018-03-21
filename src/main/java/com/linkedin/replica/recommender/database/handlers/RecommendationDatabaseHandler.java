@@ -9,7 +9,7 @@ import com.linkedin.replica.recommender.models.User;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public interface RecommendationHandler extends DatabaseHandler{
+public interface RecommendationDatabaseHandler extends DatabaseHandler{
 
     /**
      * Get the recommended users for a specific user

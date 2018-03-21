@@ -2,8 +2,8 @@ package database;
 
 import com.arangodb.ArangoCursor;
 import com.arangodb.velocypack.VPackSlice;
-import com.linkedin.replica.recommender.database.handlers.RecommendationHandler;
-import com.linkedin.replica.recommender.database.handlers.impl.ArangoHandler;
+import com.linkedin.replica.recommender.database.handlers.RecommendationDatabaseHandler;
+import com.linkedin.replica.recommender.database.handlers.impl.ArangoDatabaseHandler;
 import com.linkedin.replica.recommender.models.Article;
 import com.linkedin.replica.recommender.models.JobListing;
 import com.linkedin.replica.recommender.models.User;
@@ -21,14 +21,14 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 
-public class RecommendationHandlerTest {
-    private static RecommendationHandler databaseHandler;
+public class RecommendationDatabaseHandlerTest {
+    private static RecommendationDatabaseHandler databaseHandler;
     private static Configuration config;
 
     @BeforeClass
     public static void setup() throws IOException, ParseException, SQLException, ClassNotFoundException {
         DatabaseSeed.init();
-        databaseHandler =  new ArangoHandler();
+        databaseHandler =  new ArangoDatabaseHandler();
         config = Configuration.getInstance();
     }
 

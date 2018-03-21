@@ -24,7 +24,9 @@ public class DatabaseSeed {
     }
 
     public static void init() throws IOException, ParseException, SQLException, ClassNotFoundException {
-        Configuration.init("src/main/resources/config/app.config", "src/main/resources/config/arango.test.config", "src/main/resources/config/commands.config");
+        Configuration.init("src/main/resources/config/app.config", "src/main/resources/config/arango.test.config",
+                "src/main/resources/config/commands.config", "src/main/resources/config/redis.config",
+                "src/main/resources/config/controller.config");
         config = Configuration.getInstance();
         String dbName = config.getArangoConfig("db.name");
         DatabaseConnection.init();
@@ -142,7 +144,7 @@ public class DatabaseSeed {
         for (Object job : jobs) {
             JSONObject jobObject = (JSONObject) job;
             jobDocument = new BaseDocument();
-
+            jobDocument.addAttribute("jobId", jobObject.get("jobId"));
             jobDocument.addAttribute("positionName", jobObject.get("positionName"));
             jobDocument.addAttribute("companyName", jobObject.get("companyName"));
             jobDocument.addAttribute("companyId", jobObject.get("companyId"));
