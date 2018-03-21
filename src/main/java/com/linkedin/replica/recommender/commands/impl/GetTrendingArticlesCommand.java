@@ -24,6 +24,8 @@ public class GetTrendingArticlesCommand extends Command {
     }
 
     public Object execute() throws IOException {
+        validateArgs(new String[]{"userId"});
+
         String userId = this.args.get("userId").toString();
         recommendationDatabaseHandler = (RecommendationDatabaseHandler) dbHandler;
         // call dbHandler to get trendingArticles and return results in the results map as key-value pair

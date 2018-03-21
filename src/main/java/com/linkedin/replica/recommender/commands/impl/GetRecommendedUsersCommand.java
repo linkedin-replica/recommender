@@ -21,6 +21,7 @@ public class GetRecommendedUsersCommand extends Command {
      * @return The output (if any) of the command
      */
     public Object execute() throws IOException {
+        validateArgs(new String[]{"userId"});
         String userId = this.args.get("userId").toString();
         recommendationDatabaseHandler = (RecommendationDatabaseHandler) dbHandler;
         TreeMap<User, Integer> friendsOfFriends = recommendFriendsOfFriends(userId);

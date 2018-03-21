@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.linkedin.replica.recommender.exceptions.RecommenderException;
+import com.linkedin.replica.recommender.exceptions.BadRequestException;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -48,7 +48,7 @@ public class RequestDecoderHandler extends ChannelInboundHandlerAdapter {
         if (msg instanceof LastHttpContent) {
             // check if body was empty
             if (builder.length() == 0)
-                throw new RecommenderException("Request Body must not be empty.");
+                throw new BadRequestException("Request Body must not be empty.");
 
             // decode request body content collected in builder into request object instance.
             String json = builder.toString();
@@ -57,7 +57,7 @@ public class RequestDecoderHandler extends ChannelInboundHandlerAdapter {
 
             // check if JSOn body is empty eg. {}
             if (body.getAsJsonObject().size() == 0)
-                throw new RecommenderException("Request Body must not be empty.");
+                throw new BadRequestException("Request Body must not be empty.");
 
             // reset builder
             builder = new StringBuilder();
@@ -79,7 +79,7 @@ public class RequestDecoderHandler extends ChannelInboundHandlerAdapter {
             responseBody.put("code", HttpResponseStatus.NOT_FOUND.code());
             responseBody.put("type", HttpResponseStatus.NOT_FOUND);
         } else {
-            if (cause instanceof RecommenderException) {
+            if (cause instanceof BadRequestException) {
                 responseBody.put("code", HttpResponseStatus.BAD_REQUEST.code());
                 responseBody.put("type", HttpResponseStatus.BAD_REQUEST);
             } else {

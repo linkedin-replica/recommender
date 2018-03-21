@@ -3,15 +3,13 @@ package com.linkedin.replica.recommender.messaging;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.linkedin.replica.recommender.utils.Configuration;
-import com.linkedin.replica.recommender.exceptions.RecommenderException;
+import com.linkedin.replica.recommender.exceptions.BadRequestException;
 import com.linkedin.replica.recommender.services.RecommendationService;
 import com.linkedin.replica.recommender.services.Workers;
 import com.rabbitmq.client.*;
@@ -72,7 +70,7 @@ public class ClientMessagesReceiver {
                             if (results != null)
                                 response.put("results", results);
 
-                        } catch (RecommenderException e) {
+                        } catch (BadRequestException e) {
                             // set status code to 400
                             response.put("statusCode", "400");
                             response.put("error", e.getMessage());
