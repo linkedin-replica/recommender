@@ -58,7 +58,7 @@ public class ClientMessagesReceiver {
                         // Extract the request arguments
                         JsonObject object = new JsonParser().parse(new String(body)).getAsJsonObject();
                         String commandName = object.get("commandName").getAsString();
-                        HashMap<String, String> args = new HashMap<>();
+                        HashMap<String, Object> args = new HashMap<>();
                         for (String key : object.keySet())
                             if (!key.equals("commandName"))
                                 args.put(key, object.get(key).getAsString());
