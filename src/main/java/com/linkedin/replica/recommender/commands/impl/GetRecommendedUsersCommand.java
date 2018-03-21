@@ -25,13 +25,11 @@ public class GetRecommendedUsersCommand extends Command {
         recommendationDatabaseHandler = (RecommendationDatabaseHandler) dbHandler;
         TreeMap<User, Integer> friendsOfFriends = recommendFriendsOfFriends(userId);
         ArrayList<User> recommendedUsers = sortFriendsOfFriends(friendsOfFriends);
-        LinkedHashMap<String, Object> results = new LinkedHashMap<String, Object>();
-        results.put("result", recommendedUsers);
 
         Boolean toBeCached = Boolean.parseBoolean(this.args.get("toBeCached"));
         if(toBeCached){
             recommendationCacheHandler = (RecommendationCacheHandler) cacheHandler;
-            recommendationCacheHandler.saveRecommendedFriends(userId, results);
+            recommendationCacheHandler.saveRecommendedFriends(userId, recommendedUsers);
         }
         return recommendedUsers;
     }
