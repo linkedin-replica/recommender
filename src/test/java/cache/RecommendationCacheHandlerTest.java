@@ -46,9 +46,8 @@ public class RecommendationCacheHandlerTest {
     public void testJobsRecommendationCache() throws NoSuchMethodException, IllegalAccessException, InstantiationException, IOException, InvocationTargetException, ClassNotFoundException {
         Object results = recommendationService.serve("recommendations.jobs", args);
         ArrayList<JobListing> jobListings = (ArrayList<JobListing>) results;
-        Jedis cacheInstance = Cache.getInstance().getRedisPool().getResource();
         String key = config.getRedisConfig("cache.jobs.name") + ":" + userId;
-        ArrayList<JobListing> cachedJobs = JedisCacheHandler.getJobsList(key, cacheInstance);
+        ArrayList<JobListing> cachedJobs = JedisCacheHandler.getTList(key, JobListing.class);
         assertEquals("Cached jobs should match returned jobs", true, cachedJobs.containsAll(jobListings));
     }
 
@@ -56,9 +55,8 @@ public class RecommendationCacheHandlerTest {
     public void testArticlesRecommendationCache() throws NoSuchMethodException, IllegalAccessException, InstantiationException, IOException, InvocationTargetException, ClassNotFoundException {
         Object results = recommendationService.serve("recommendations.trending.articles", args);
         ArrayList<Article> articles = (ArrayList<Article>) results;
-        Jedis cacheInstance = Cache.getInstance().getRedisPool().getResource();
         String key = config.getRedisConfig("cache.articles.name") + ":" + userId;
-        ArrayList<Article> cachedArticles = JedisCacheHandler.getArticlesList(key, cacheInstance);
+        ArrayList<Article> cachedArticles = JedisCacheHandler.getTList(key, Article.class);
         assertEquals("Cached articles should match returned articles", true, cachedArticles.containsAll(articles));
     }
 
@@ -66,9 +64,8 @@ public class RecommendationCacheHandlerTest {
     public void testUsersRecommendationCache() throws NoSuchMethodException, IllegalAccessException, InstantiationException, IOException, InvocationTargetException, ClassNotFoundException {
         Object results = recommendationService.serve("recommendations.users", args);
         ArrayList<Article> users = (ArrayList<Article>) results;
-        Jedis cacheInstance = Cache.getInstance().getRedisPool().getResource();
         String key = config.getRedisConfig("cache.users.name") + ":" + userId;
-        ArrayList<User> cachedUsers = JedisCacheHandler.getUsersList(key, cacheInstance);
+        ArrayList<User> cachedUsers = JedisCacheHandler.getTList(key, User.class);
         assertEquals("Cached articles should match returned articles", true, cachedUsers.containsAll(users));
     }
 
