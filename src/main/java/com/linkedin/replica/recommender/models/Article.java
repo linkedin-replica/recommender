@@ -58,4 +58,10 @@ public class Article {
     public String toString() {
         return title + "\t" + authorFirstName + " " + authorLastName + " " + peopleTalking;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        Article article = (Article) obj;
+        return this.postId.equals(article.postId);
+    }
 }

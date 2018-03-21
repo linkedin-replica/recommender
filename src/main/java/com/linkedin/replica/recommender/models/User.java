@@ -9,6 +9,10 @@ public class User implements Comparable<User> {
     private String headline;
     private String industry;
 
+    public User() {
+        super();
+    }
+
     public User(String userId, String firstName, String lastName, String headline, String industry) {
         this.userId = userId;
         this.firstName = firstName;
@@ -45,5 +49,11 @@ public class User implements Comparable<User> {
         if (this.mutualCount != other.mutualCount)
             return this.userId.compareTo(other.userId);
         return other.mutualCount - this.mutualCount;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        User user = (User) obj;
+        return this.userId.equals(user.userId);
     }
 }
