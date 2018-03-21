@@ -19,17 +19,16 @@ public class GetTrendingArticlesCommand extends Command {
     private RecommendationDatabaseHandler recommendationDatabaseHandler;
     private RecommendationCacheHandler recommendationCacheHandler;
 
-    public GetTrendingArticlesCommand(HashMap<String, String> args) {
+    public GetTrendingArticlesCommand(HashMap<String, Object> args) {
         super(args);
     }
 
     public Object execute() throws IOException {
-        LinkedHashMap<String, Object> results = new LinkedHashMap<>();
-        String userId = this.args.get("userId");
+        String userId = this.args.get("userId").toString();
         recommendationDatabaseHandler = (RecommendationDatabaseHandler) dbHandler;
         // call dbHandler to get trendingArticles and return results in the results map as key-value pair
         ArrayList<Article> articles = recommendationDatabaseHandler.getTrendingArticles(userId);
-        Boolean toBeCached = Boolean.parseBoolean(this.args.get("toBeCached"));
+        boolean toBeCached = (boolean) this.args.get("toBeCached");
         if(toBeCached){
             recommendationCacheHandler = (RecommendationCacheHandler) cacheHandler;
             recommendationCacheHandler.saveRecommendedArticles(userId, articles);
