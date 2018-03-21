@@ -73,7 +73,9 @@ public class JedisCacheHandler implements RecommendationCacheHandler {
                 String jsonObj = gson.toJson(object);
                 pipeline.sadd(key, jsonObj);
             }
+            pipeline.sync();
             pipeline.close();
+            cacheInstance.close();
         } catch (JedisException e) {
             e.printStackTrace();
             return;
@@ -89,6 +91,7 @@ public class JedisCacheHandler implements RecommendationCacheHandler {
                 T object = gson.fromJson(result, tClass);
                 list.add(object);
             }
+            cacheInstance.close();
             return list;
         } catch(JedisException e) {
             e.printStackTrace();
