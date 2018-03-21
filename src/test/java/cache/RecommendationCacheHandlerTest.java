@@ -14,6 +14,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -28,7 +29,7 @@ public class RecommendationCacheHandlerTest {
     private static RecommendationService recommendationService;
     private static Configuration config;
     private static String userId = "0";
-    private static HashMap<String, String> args;
+    private static HashMap<String, Object> args;
 
     @BeforeClass
     public static void setup() throws ClassNotFoundException, SQLException, ParseException, IOException {
@@ -39,7 +40,7 @@ public class RecommendationCacheHandlerTest {
         recommendationService = new RecommendationService();
         args = new HashMap<>();
         args.put("userId", userId);
-        args.put("toBeCached", "true");
+        args.put("toBeCached", true);
     }
 
     @Test
