@@ -2,8 +2,6 @@ package cache;
 
 import com.google.gson.Gson;
 import com.linkedin.replica.recommender.cache.Cache;
-import com.linkedin.replica.recommender.cache.handlers.CacheHandler;
-import com.linkedin.replica.recommender.cache.handlers.RecommendationCacheHandler;
 import com.linkedin.replica.recommender.cache.handlers.impl.JedisCacheHandler;
 import com.linkedin.replica.recommender.models.Article;
 import com.linkedin.replica.recommender.models.JobListing;
@@ -18,13 +16,10 @@ import org.junit.Test;
 import redis.clients.jedis.Jedis;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Set;
 import static org.junit.Assert.assertEquals;
 
 
@@ -32,9 +27,6 @@ public class RecommendationCacheHandlerTest {
     private static Gson gson;
     private static RecommendationService recommendationService;
     private static Configuration config;
-//    private String CACHE_FRIENDS = configuration.getRedisConfig("cache.friends.name");
-//    private String CACHE_JOBS = configuration.getRedisConfig("cache.jobs.name");
-//    private String CACHE_ARTICLES = configuration.getRedisConfig("cache.articles.name");
     private static String userId = "0";
     private static HashMap<String, String> args;
 
@@ -57,7 +49,7 @@ public class RecommendationCacheHandlerTest {
         Jedis cacheInstance = Cache.getInstance().getRedisPool().getResource();
         String key = config.getRedisConfig("cache.jobs.name") + ":" + userId;
         ArrayList<JobListing> cachedJobs = JedisCacheHandler.getJobsList(key, cacheInstance);
-        assertEquals("Cached jobs should match returned jobs", cachedJobs.containsAll(jobListings));
+        assertEquals("Cached jobs should match returned jobs", true, cachedJobs.containsAll(jobListings));
     }
 
     @Test
@@ -67,7 +59,7 @@ public class RecommendationCacheHandlerTest {
         Jedis cacheInstance = Cache.getInstance().getRedisPool().getResource();
         String key = config.getRedisConfig("cache.articles.name") + ":" + userId;
         ArrayList<Article> cachedArticles = JedisCacheHandler.getArticlesList(key, cacheInstance);
-        assertEquals("Cached articles should match returned articles", cachedArticles.containsAll(articles));
+        assertEquals("Cached articles should match returned articles", true, cachedArticles.containsAll(articles));
     }
 
     @Test
@@ -77,13 +69,14 @@ public class RecommendationCacheHandlerTest {
         Jedis cacheInstance = Cache.getInstance().getRedisPool().getResource();
         String key = config.getRedisConfig("cache.users.name") + ":" + userId;
         ArrayList<User> cachedUsers = JedisCacheHandler.getUsersList(key, cacheInstance);
-        assertEquals("Cached articles should match returned articles", cachedUsers.containsAll(users));
+        assertEquals("Cached articles should match returned articles", true, cachedUsers.containsAll(users));
     }
 
     @AfterClass
     public static void teardown() throws IOException {
         DatabaseSeed.closeDBConnection();
         DatabaseSeed.dropDatabase();
+        Cache.getInstance().destroyRedisPool();
     }
 
 
