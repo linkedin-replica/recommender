@@ -29,7 +29,6 @@ public class DatabaseSeed {
                 "src/main/resources/config/controller.config");
         config = Configuration.getInstance();
         String dbName = config.getArangoConfig("db.name");
-        DatabaseConnection.init();
         ArangoDB arangoDB = DatabaseConnection.getInstance().getArangoDriver();
         try {
             arangoDB.createDatabase(dbName);

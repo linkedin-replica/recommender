@@ -34,7 +34,6 @@ public class RecommendationCacheHandlerTest {
     @BeforeClass
     public static void setup() throws ClassNotFoundException, SQLException, ParseException, IOException {
         DatabaseSeed.init();
-        Cache.init();
         gson = new Gson();
         config = Configuration.getInstance();
         recommendationService = new RecommendationService();
