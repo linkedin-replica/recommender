@@ -3,6 +3,7 @@ package com.linkedin.replica.recommender.database;
 import com.arangodb.ArangoDB;
 import com.linkedin.replica.recommender.utils.Configuration;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
 
 /**
@@ -21,8 +22,8 @@ public class DatabaseConnection {
 
     private void initializeArangoDB() {
         arangoDriver = new ArangoDB.Builder()
-                .user(config.getArangoConfig("arangodb.user"))
-                .password(config.getArangoConfig("arangodb.password"))
+//                .user(config.getArangoConfig("arangodb.user"))
+//                .password(config.getArangoConfig("arangodb.password"))
                 .build();
     }
 
@@ -32,11 +33,13 @@ public class DatabaseConnection {
      * @return The DB instance
      */
     public static DatabaseConnection getInstance() throws IOException {
+        if(dbConnection == null) {
+            synchronized (DatabaseConnection.class) {
+                if(dbConnection == null)
+                    dbConnection = new DatabaseConnection();
+            }
+        }
         return dbConnection;
-    }
-
-    public static void init() throws IOException {
-        dbConnection = new DatabaseConnection();
     }
 
 

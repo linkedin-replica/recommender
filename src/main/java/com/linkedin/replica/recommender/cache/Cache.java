@@ -23,11 +23,13 @@ public class Cache {
      * @return The cache instance
      */
     public static Cache getInstance() throws IOException {
+        if (cache == null) {
+            synchronized (Cache.class) {
+                if (cache == null)
+                    cache = new Cache();
+            }
+        }
         return cache;
-    }
-
-    public static void init() throws IOException {
-        cache = new Cache();
     }
 
     public JedisPool getRedisPool() {
