@@ -78,7 +78,6 @@ public class DatabaseSeed {
             userDocument.addAttribute("firstName", userObject.get("firstName"));
             userDocument.addAttribute("lastName", userObject.get("lastName"));
             userDocument.addAttribute("headline", userObject.get("headline"));
-            userDocument.addAttribute("industry", userObject.get("industry"));
             userDocument.addAttribute("skills", userObject.get("skills"));
             userDocument.addAttribute("friendsList", userObject.get("friendsList"));
             arangoDatabaseInstance.collection(collectionName).insertDocument(userDocument);

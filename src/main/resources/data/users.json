@@ -4,7 +4,6 @@
     "firstName": "Omar",
     "lastName": "Radwan",
     "headline": "Software Engineer at DFKI",
-    "industry": "Software",
     "skills": [
       "Python",
       "Java",
@@ -16,22 +15,19 @@
         "userId": "1",
         "firstName": "Ahmed",
         "lastName": "Soliman",
-        "headline": "Junior Data Wrangling Engineer",
-        "industry": "Software"
+        "headline": "Junior Data Wrangling Engineer"
       },
       {
         "userId": "2",
         "firstName": "John",
         "lastName": "Bob",
-        "headline": "Truck Driver",
-        "industry": "Market"
+        "headline": "Truck Driver"
       },
       {
         "userId": "3",
         "firstName": "Mark",
         "lastName": "Lopez",
-        "headline": "Student",
-        "industry": "N/A"
+        "headline": "Student"
       }
     ]
   },
@@ -40,7 +36,6 @@
     "firstName": "Ahmed",
     "lastName": "Soliman",
     "headline": "Junior Data Wrangling Engineer",
-    "industry": "Software",
     "skills": ["Python", "Java", "Software", "NLP"]
   },
   {
@@ -48,7 +43,6 @@
     "firstName": "John",
     "lastName": "Bob",
     "headline": "Truck Driver",
-    "industry": "Market",
     "skills": ["License", "Driving Experience"]
   },
   {
@@ -56,7 +50,6 @@
     "firstName": "Mark",
     "lastName": "Lopez",
     "headline": "Student",
-    "industry": "N/A",
     "skills": []
   }
 ]

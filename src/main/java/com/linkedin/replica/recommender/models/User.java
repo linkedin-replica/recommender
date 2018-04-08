@@ -7,15 +7,13 @@ public class User implements Comparable<User> {
     private String firstName;
     private String lastName;
     private String headline;
-    private String industry;
     private String imageURL;
 
-    public User(String userId, String firstName, String lastName, String headline, String industry, String imageURL) {
+    public User(String userId, String firstName, String lastName, String headline, String imageURL) {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.headline = headline;
-        this.industry = industry;
         this.imageURL = imageURL;
     }
 
