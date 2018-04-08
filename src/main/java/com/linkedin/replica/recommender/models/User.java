@@ -8,13 +8,15 @@ public class User implements Comparable<User> {
     private String lastName;
     private String headline;
     private String industry;
+    private String imageURL;
 
-    public User(String userId, String firstName, String lastName, String headline, String industry) {
+    public User(String userId, String firstName, String lastName, String headline, String industry, String imageURL) {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.headline = headline;
         this.industry = industry;
+        this.imageURL = imageURL;
     }
 
     public String getUserId() {
@@ -23,18 +25,6 @@ public class User implements Comparable<User> {
 
     public String getFirstName() {
         return this.firstName;
-    }
-
-    public String getLastName() {
-        return this.lastName;
-    }
-
-    public String getHeadline() {
-        return this.headline;
-    }
-
-    public String getIndustry() {
-        return this.industry;
     }
 
     public void setMutualCount(int mutualCount) {

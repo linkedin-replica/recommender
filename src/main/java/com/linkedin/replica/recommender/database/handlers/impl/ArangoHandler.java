@@ -43,7 +43,8 @@ public class ArangoHandler implements RecommendationHandler {
             String lastName = friend.get("lastName").getAsString();
             String headline = friend.get("headline").getAsString();
             String industry = friend.get("industry").getAsString();
-            friends.add(new User(id, firstName, lastName, headline, industry));
+            String imageURL = friend.get("imageURL").getAsString();
+            friends.add(new User(id, firstName, lastName, headline, industry, imageURL));
         }
         return friends;
     }
