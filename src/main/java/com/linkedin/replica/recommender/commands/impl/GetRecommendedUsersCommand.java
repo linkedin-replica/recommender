@@ -24,8 +24,7 @@ public class GetRecommendedUsersCommand extends Command {
         validateArgs(new String[]{"userId"});
         String userId = this.args.get("userId").toString();
         recommendationDatabaseHandler = (RecommendationDatabaseHandler) dbHandler;
-        TreeMap<User, Integer> friendsOfFriends = recommendFriendsOfFriends(userId);
-        ArrayList<User> recommendedUsers = sortFriendsOfFriends(friendsOfFriends);
+        ArrayList<User> recommendedUsers = recommendationDatabaseHandler.getFriendsOfFriends(userId);
 
         boolean toBeCached = (boolean) this.args.get("toBeCached");
         if(toBeCached){
@@ -35,48 +34,4 @@ public class GetRecommendedUsersCommand extends Command {
         return recommendedUsers;
     }
 
-    /**
-     * get all unique friends of friends with their occurrences
-     *
-     * @param userId: the user to get his friends of friends.
-     * @return map of the users and their occurrences count
-     * @throws IOException if the congif file is not found
-     */
-    public TreeMap<User, Integer> recommendFriendsOfFriends(String userId) throws IOException {
-        ArrayList<User> friends = recommendationDatabaseHandler.getFriendsOfUser(userId);
-        TreeMap<User, Integer> friendsOfFriends = new TreeMap<User, Integer>();
-
-        for (User friend : friends) {
-            String friendId = friend.getUserId();
-            ArrayList<User> friendsOfFriend = recommendationDatabaseHandler.getFriendsOfUser(friendId);
-            for (User friendOfFriend : friendsOfFriend) {
-                if (friendOfFriend.getUserId().equals(userId))
-                    continue;
-
-                Integer freq = friendsOfFriends.get(friendOfFriend);
-                if (freq == null) freq = 0;
-
-                friendsOfFriends.put(friendOfFriend, freq + 1);
-            }
-        }
-        return friendsOfFriends;
-    }
-
-    /**
-     * sorts the recommended users based on the number of mutual friends
-     *
-     * @param friendsOfFriends: maps each user to the number of mutual friends
-     * @return sorted list of the recommended users
-     */
-    private ArrayList<User> sortFriendsOfFriends(TreeMap<User, Integer> friendsOfFriends) {
-        ArrayList<User> recommendedUsers = new ArrayList<User>();
-        for (Map.Entry<User, Integer> entry : friendsOfFriends.entrySet()) {
-            User cur = entry.getKey();
-            cur.setMutualCount(entry.getValue());
-            recommendedUsers.add(cur);
-        }
-
-        Collections.sort(recommendedUsers);
-        return recommendedUsers;
-    }
 }

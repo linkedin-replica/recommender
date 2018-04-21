@@ -12,12 +12,11 @@ import java.util.ArrayList;
 public interface RecommendationDatabaseHandler extends DatabaseHandler{
 
     /**
-     * Get the recommended users for a specific user
-     *
-     * @param userId: the user seeking friend recommendations
-     * @return list of recommended users
+     * Get list of friends of friends
+     * @param userId
+     * @return ArrayList of Users
      */
-    ArrayList<User> getFriendsOfUser(String userId) throws IOException;
+    ArrayList<User> getFriendsOfFriends(String userId) throws IOException;
 
 
     /**
