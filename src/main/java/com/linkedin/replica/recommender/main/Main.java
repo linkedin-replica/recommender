@@ -27,7 +27,7 @@ public class Main {
 
         // create singleton instance of DatabaseConnection class that is responsible for intiating connections
         // with databases
-        DatabaseConnection.init();
+        DatabaseConnection.getInstance();
     }
 
     public static void start(String... args) throws FileNotFoundException, ClassNotFoundException, IOException, SQLException, InterruptedException, TimeoutException {
@@ -40,7 +40,7 @@ public class Main {
 
         // create singleton instance of DatabaseConnection class that is responsible for intiating connections
         // with databases
-        DatabaseConnection.init();
+        DatabaseConnection.getInstance();
         // start RabbitMQ
         new ClientMessagesReceiver();
         // start server

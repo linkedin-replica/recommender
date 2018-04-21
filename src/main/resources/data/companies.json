@@ -1,0 +1,29 @@
+[
+  {
+    "companyId": "0",
+    "companyName": "companyName0",
+    "userId": "0",
+    "industryType": "industryType",
+    "profilePictureUrl": "profilePictureUrl0",
+    "aboutUs": "aboutUS",
+    "posts": "ArrayOfPostsIds"
+  },
+  {
+    "companyId": "1",
+    "companyName": "companyName1",
+    "userId": "0",
+    "industryType": "industryType",
+    "profilePictureUrl": "profilePictureUrl1",
+    "aboutUs": "aboutUS",
+    "posts": "ArrayOfPostsIds"
+  },
+  {
+    "companyId": "2",
+    "companyName": "companyName2",
+    "userId": "0",
+    "industryType": "industryType",
+    "profilePictureUrl": "profilePictureUrl2",
+    "aboutUs": "aboutUS",
+    "posts": "ArrayOfPostsIds"
+  }
+]

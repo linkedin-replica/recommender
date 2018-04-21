@@ -27,25 +27,26 @@ public class ArangoDatabaseHandler implements RecommendationDatabaseHandler {
     }
 
     /**
-     * Get the recommended users for a specific user
-     *
-     * @param userId : the user seeking friend recommendations
-     * @return list of recommended users
+     * Get list of friends of friends
+     * @param userId
+     * @return ArrayList of Users
      */
-    public ArrayList<User> getFriendsOfUser(String userId) throws IOException {
-        ArangoCursor<VPackSlice> userCursor = getUserById(userId);
-        VPackSlice friendsList = userCursor.next().get("friendsList");
-        ArrayList<User> friends = new ArrayList<>();
-        for (int i = 0; i < friendsList.size(); i++) {
-            VPackSlice friend = friendsList.get(i);
-            String id = friend.get("userId").getAsString();
-            String firstName = friend.get("firstName").getAsString();
-            String lastName = friend.get("lastName").getAsString();
-            String headline = friend.get("headline").getAsString();
-            String industry = friend.get("industry").getAsString();
-            friends.add(new User(id, firstName, lastName, headline, industry));
-        }
-        return friends;
+    public ArrayList<User> getFriendsOfFriends(String userId) {
+        String query = "FOR u IN users FILTER "
+                + "u.userId == @userId " +
+                "LET result = ( " +
+                "FOR friend IN users FILTER " +
+                "friend.userId IN u.friendsList " +
+                "FOR friendOfFriend IN users FILTER " +
+                "friendOfFriend.userId IN friend.friendsList AND friendOfFriend.userId NOT IN u.friendsList " +
+                "RETURN friendOfFriend " +
+                ") " +
+                "FOR res IN UNIQUE(result) " +
+                "RETURN res";
+        Map<String, Object> bindVars = new MapBuilder().put("userId", userId).get();
+        ArangoCursor<User> cursor = dbInstance.query(query, bindVars, null, User.class);
+        ArrayList<User> users = new ArrayList<>(cursor.asListRemaining());
+        return users;
     }
 
     /**
@@ -55,19 +56,22 @@ public class ArangoDatabaseHandler implements RecommendationDatabaseHandler {
      * @return list of recommended job listings
      */
     public ArrayList<JobListing> getRecommendedJobListing(String userId) throws IOException {
-        ArangoCursor<VPackSlice> userCursor = getUserById(userId);
-        VPackSlice userSkills = userCursor.next().get("skills");
-        //query for getting jobListing if there is a match between this jobListing and requesting user's skills
-        String query = "FOR job IN jobs FILTER "
-                + "COUNT(INTERSECTION(@userSkills, job.requiredSkills)) != 0 "
-                + "RETURN job";
-        //bind variables
-        Map<String, Object> bindVars = new MapBuilder().put("userSkills", userSkills).get();
 
-        //execute query
+        //query for getting jobListing if there is a match between this jobListing and requesting user's skills
+        String query = "FOR user in users " +
+                "FILTER user.userId == @userId " +
+                "FOR job IN jobs FILTER " +
+                "COUNT(INTERSECTION(user.skills, job.requiredSkills)) != 0 " +
+                "FOR company in companies " +
+                "FILTER company.companyId == job.companyId " +
+                "return UNSET(MERGE_RECURSIVE( " +
+                "job," +
+                "{\"companyName\": company.companyName, \"profilePictureUrl\": company.profilePictureUrl} " +
+                "), \"_id\", \"_rev\", \"_key\")";
+        //bind variables
+        Map<String, Object> bindVars = new MapBuilder().put("userId", userId).get();
         ArangoCursor<JobListing> cursor = dbInstance.query(query, bindVars, null, JobListing.class);
-        final ArrayList<JobListing> returnedResults = new ArrayList<>();
-        cursor.forEachRemaining(returnedResults::add);
+        ArrayList<JobListing> returnedResults = new ArrayList<>(cursor.asListRemaining());
         return returnedResults;
     }
 
@@ -80,7 +84,7 @@ public class ArangoDatabaseHandler implements RecommendationDatabaseHandler {
     }
 
     public ArangoCursor<VPackSlice> getArticleById(String postId) throws IOException {
-        String query = "FOR article IN articles FILTER "
+        String query = "FOR article IN posts FILTER "
                 + "article.postId == @postId "
                 + "RETURN article";
         Map<String, Object> bindVars = new MapBuilder().put("postId", postId).get();
@@ -99,11 +103,10 @@ public class ArangoDatabaseHandler implements RecommendationDatabaseHandler {
         Configuration config = Configuration.getInstance();
         int likesWeight = Integer.parseInt(config.getArangoConfig("weights.like"));
         int commentsWeight = Integer.parseInt(config.getArangoConfig("weights.comment"));
-        int sharesWeight = Integer.parseInt(config.getArangoConfig("weights.share"));
         int numTrendingArticles = Integer.parseInt(config.getArangoConfig("count.trendingArticles"));
 
         //query for getting the top n articles sorted by likes, comments and shares with their weights from the most recent 50 articles
-        String queryHeader = "FOR article IN articles ";
+        String queryHeader = "FOR article IN posts FILTER article.isArticle == true ";
 
         String getAuthorQuery = "LET author = FIRST(FOR u IN users " +
                 "FILTER u.userId == article.authorId " +
@@ -113,38 +116,37 @@ public class ArangoDatabaseHandler implements RecommendationDatabaseHandler {
                 + "LIMIT 0, 50 ";
 
         String sortArticlesByPopularityQuery = "LET comments = article.commentsCount * @commentsWeight "
-                + "LET likes = article.likesCount * @likesWeight "
-                + "LET shares = LENGTH(article.shares) * @sharesWeight "
-                + "LET total = likes + shares + comments "
+                + "LET likes = COUNT(article.likers) * @likesWeight "
+                + "LET total = likes + comments "
                 + "SORT total DESC "
                 + "LIMIT 0, @numArticles ";
 
+        String userDetailsQuery = "FOR u in users FILTER u.userId == article.authorId " +
+                "LET authorName = CONCAT(u.firstName, \" \",  u.lastName) " +
+                "LET authorProfilePictureUrl = u.profilePictureUrl " +
+                "LET headline = u.headline ";
 
-        String returnQuery = "RETURN {" +
-                "\"postId\": article.postId," +
-                "\"authorId\": article.authorId," +
-                "\"title\": article.headline," +
-                "\"authorFirstName\": author.firstName," +
-                "\"authorLastName\": author.lastName," +
+        String returnQuery = "RETURN MERGE_RECURSIVE(UNSET(article, \"text\", \"liked\", \"isArticle\", \"likers\", \"peopleTalking\"), " +
+                "{\"authorName\": authorName," +
+                "\"headline\":headline," +
+                "\"authorProfilePictureUrl\": authorProfilePictureUrl," +
                 "\"miniText\": LEFT(article.text, 200)," +
+                "\"liked\": u.userId IN article.likers," +
                 "\"peopleTalking\": total" +
-                "}";
+                "})";
 
         String query = queryHeader + getAuthorQuery + sortArticlesByTimeQuery + sortArticlesByPopularityQuery
-                + returnQuery;
+                + userDetailsQuery + returnQuery;
 
         //bind variables
         Map<String, Object> bindVars = new MapBuilder()
                 .put("likesWeight", likesWeight)
                 .put("commentsWeight", commentsWeight)
-                .put("sharesWeight", sharesWeight)
                 .put("numArticles", numTrendingArticles)
                 .get();
-
         //execute query
         ArangoCursor<Article> cursor = dbInstance.query(query, bindVars, null, Article.class);
-        final ArrayList<Article> returnedResults = new ArrayList<>();
-        cursor.forEachRemaining(returnedResults::add);
+        ArrayList<Article> returnedResults = new ArrayList<>(cursor.asListRemaining());
         return returnedResults;
     }
 
