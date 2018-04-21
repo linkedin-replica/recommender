@@ -1,30 +1,21 @@
 package com.linkedin.replica.recommender.models;
 
+import java.util.ArrayList;
+
 public class Article {
 
-    private String postId;
     private String authorId;
-    private String title;
-    private String authorFirstName;
-    private String authorLastName;
-    private String miniText;
+    private String postId;
+    private int commentsCount;
+    private long timestamp;
+    private boolean isCompanyPost;
+    private boolean liked;
+    private String authorName;
+    private String authorProfilePictureUrl;
+    private String headline;
     private int peopleTalking;
-
-
-    public Article() {
-        super();
-    }
-
-    public Article(String authorId, String postId, String title, String authorFirstName, String authorLastName, String miniText, int peopleTalking) {
-        this();
-        this.authorId = authorId;
-        this.postId = postId;
-        this.authorFirstName = authorFirstName;
-        this.authorLastName = authorLastName;
-        this.title = title;
-        this.miniText = miniText;
-        this.peopleTalking = peopleTalking;
-    }
+    private String miniText;
+    private String title;
 
     public String getAuthorId() {
         return authorId;
@@ -34,34 +25,31 @@ public class Article {
         return postId;
     }
 
-    public String getTitle() {
-        return title;
+    public String getAuthorName() {
+        return authorName;
     }
 
-    public String getAuthorFirstName() {
-        return authorFirstName;
+    public String getAuthorProfilePictureUrl() {
+        return authorProfilePictureUrl;
     }
 
-    public String getAuthorLastName() {
-        return authorLastName;
-    }
-
-    public String getMiniText() {
-        return miniText;
+    public String getHeadline() {
+        return headline;
     }
 
     public int getPeopleTalking() {
         return peopleTalking;
     }
 
-    @Override
-    public String toString() {
-        return title + "\t" + authorFirstName + " " + authorLastName + " " + peopleTalking;
+    public String getMiniText() {
+        return miniText;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        Article article = (Article) obj;
-        return this.postId.equals(article.postId);
+    public Article() {
+        super();
+    }
+
+    public String getTitle() {
+        return this.title;
     }
 }
