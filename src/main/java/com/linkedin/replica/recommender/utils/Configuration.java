@@ -1,6 +1,5 @@
 package com.linkedin.replica.recommender.utils;
 
-import com.linkedin.replica.recommender.cache.handlers.CacheHandler;
 import com.linkedin.replica.recommender.database.handlers.DatabaseHandler;
 import com.linkedin.replica.recommender.commands.Command;
 
@@ -61,12 +60,6 @@ public class Configuration {
     public Class getDatabaseHandlerClass(String commandName) throws ClassNotFoundException {
         String handlerPackageName = DatabaseHandler.class.getPackage().getName() + ".impl";
         String handlerClassPath = handlerPackageName + "." + commandConfig.get(commandName + ".db.handler");
-        return Class.forName(handlerClassPath);
-    }
-
-    public Class getCacheHandlerClass(String commandName) throws ClassNotFoundException {
-        String handlerPackageName = CacheHandler.class.getPackage().getName() + ".impl";
-        String handlerClassPath = handlerPackageName + "." + commandConfig.get(commandName + ".cache.handler");
         return Class.forName(handlerClassPath);
     }
 
