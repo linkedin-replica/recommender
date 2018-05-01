@@ -33,16 +33,20 @@ public class RecommendationDatabaseHandlerTest {
     }
 
     @Test
-    public void testGetFriendsOfUser() throws IOException, ParseException {
+    public void testGetFriendsOfFriends() throws IOException, ParseException {
         JSONArray users = DatabaseSeed.getJSONData("src/main/resources/data/users.json");
         JSONObject firstUser = (JSONObject) users.get(0);
         JSONArray firstUserFriends = (JSONArray) firstUser.get("friendsList");
-        int friendsSize = firstUserFriends.size();
-        JSONObject firstFriend = (JSONObject) firstUserFriends.get(0);
-        String firstFriendName = (String) firstFriend.get("firstName");
-        ArrayList<User> friends = databaseHandler.getFriendsOfUser("0");
-        assertEquals("Friend list should be of size " + friendsSize, friendsSize, friends.size());
-        assertEquals("First friend's first name should be " + firstFriendName, firstFriendName, friends.get(0).getFirstName());
+        int friendsOfFriendsCount = 0;
+        for (Object friendId : firstUserFriends) {
+            JSONObject friend = (JSONObject) users.get(Integer.parseInt((String) friendId));
+            JSONArray friendsOfFriends = (JSONArray) friend.get("friendsList");
+            for (Object friendOfFriend : friendsOfFriends)
+                if (!firstUserFriends.contains(friendOfFriend))
+                    friendsOfFriendsCount++;
+        }
+        ArrayList<User> friendsOfFriends = databaseHandler.getFriendsOfFriends("0");
+        assertEquals("Recommended list should be of size " + friendsOfFriendsCount, friendsOfFriendsCount, friendsOfFriends.size());
     }
 
     @Test
@@ -56,7 +60,6 @@ public class RecommendationDatabaseHandlerTest {
         ArrayList<Article> trendingArticles = databaseHandler.getTrendingArticles("0");
         int likesWeight = Integer.parseInt(config.getArangoConfig("weights.like"));
         int commentsWeight = Integer.parseInt(config.getArangoConfig("weights.comment"));
-        int sharesWeight = Integer.parseInt(config.getArangoConfig("weights.share"));
         int numTrendingArticles = Integer.parseInt(config.getArangoConfig("count.trendingArticles"));
 
         assertEquals("Trending articles should have at most " + numTrendingArticles + "values", true, trendingArticles.size() <= numTrendingArticles);
@@ -66,16 +69,15 @@ public class RecommendationDatabaseHandlerTest {
             assertEquals("Trending article should have an Id", true, article.getPostId() != null);
             assertEquals("Trending article should have an authorId", true, article.getAuthorId() != null);
             assertEquals("Trending article should have a title", true, article.getTitle() != null);
-            assertEquals("Trending article should have an authorFirstName", true, article.getAuthorFirstName() != null);
-            assertEquals("Trending article should have an authorLastName", true, article.getAuthorLastName() != null);
+            assertEquals("Trending article should have an authorName", true, article.getAuthorName() != null);
             assertEquals("Trending article should have miniText", true, article.getMiniText() != null);
+            assertEquals("Trending article should have profilePicture", true, article.getAuthorProfilePictureUrl() != null);
+            assertEquals("Trending article should have headline", true, article.getHeadline() != null);
 
             ArangoCursor<VPackSlice> cursor = databaseHandler.getArticleById(article.getPostId());
             VPackSlice expectedArticle = cursor.next();
-
-            int expectedPeopleTalking = Integer.parseInt(expectedArticle.get("likesCount").toString()) * likesWeight
-                    + Integer.parseInt(expectedArticle.get("commentsCount").toString()) * commentsWeight
-                    + expectedArticle.get("shares").size() * sharesWeight;
+            int expectedPeopleTalking = expectedArticle.get("likers").size() * likesWeight
+                    + expectedArticle.get("commentsCount").getAsInt() * commentsWeight;
 
             assertEquals("Trending article should have peopleTalking count", expectedPeopleTalking, article.getPeopleTalking());
         }

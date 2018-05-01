@@ -1,51 +1,63 @@
 [
   {
     "jobId": "0",
-    "positionName": "Software Developer",
-    "companyName": "Ergasti",
-    "companyId": "3",
-    "requiredSkills": ["NodeJS", "HTML", "CSS", "Java"]
+    "jobTitle": "jobTitle",
+    "industryType": "industryType",
+    "jobBrief": "jobBrief",
+    "companyId": "0",
+    "requiredSkills": [
+      "NodeJS",
+      "HTML",
+      "CSS",
+      "Java"
+    ]
   },
   {
     "jobId": "1",
-    "positionName": "Data Wrangling Engineer",
-    "companyName": "DFKI",
+    "jobTitle": "jobTitle",
+    "industryType": "industryType",
+    "jobBrief": "jobBrief",
     "companyId": "1",
     "requiredSkills": ["Python", "Java"]
   },
   {
     "jobId": "2",
-    "positionName": "HR Manager",
-    "companyName": "Vodafone",
-    "companyId": "2",
+    "jobTitle": "jobTitle",
+    "industryType": "industryType",
+    "jobBrief": "jobBrief",
+    "companyId": "0",
     "requiredSkills": ["Team Management", "Administration"]
   },
   {
     "jobId": "3",
-    "positionName": "Junior Researcher",
-    "companyName": "DHBW",
-    "companyId": "5",
+    "jobTitle": "jobTitle",
+    "industryType": "industryType",
+    "jobBrief": "jobBrief",
+    "companyId": "0",
     "requiredSkills": ["Research", "Python", "NLP"]
   },
   {
     "jobId": "4",
-    "positionName": "IT Engineer",
-    "companyName": "GUC",
-    "companyId": "4",
+    "jobTitle": "jobTitle",
+    "industryType": "industryType",
+    "jobBrief": "jobBrief",
+    "companyId": "0",
     "requiredSkills": ["Hardware", "Software"]
   },
   {
     "jobId": "5",
-    "positionName": "web developer",
-    "companyName": "ITWorx",
-    "companyId": "7",
+    "jobTitle": "jobTitle",
+    "industryType": "industryType",
+    "jobBrief": "jobBrief",
+    "companyId": "2",
     "requiredSkills": ["JS", "AngularJS", "HTML", "CSS"]
   },
   {
     "jobId": "6",
-    "positionName": "Driver",
-    "companyName": "Juhayna",
-    "companyId": "8",
+    "jobTitle": "jobTitle",
+    "industryType": "industryType",
+    "jobBrief": "jobBrief",
+    "companyId": "3",
     "requiredSkills": ["License", "Driving Experience"]
   }
 ]

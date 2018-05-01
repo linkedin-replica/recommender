@@ -12,37 +12,28 @@
       "CSS"
     ],
     "friendsList": [
-      {
-        "userId": "1",
-        "firstName": "Ahmed",
-        "lastName": "Soliman",
-        "headline": "Junior Data Wrangling Engineer",
-        "industry": "Software"
-      },
-      {
-        "userId": "2",
-        "firstName": "John",
-        "lastName": "Bob",
-        "headline": "Truck Driver",
-        "industry": "Market"
-      },
-      {
-        "userId": "3",
-        "firstName": "Mark",
-        "lastName": "Lopez",
-        "headline": "Student",
-        "industry": "N/A"
-      }
-    ]
+      "1",
+      "2"
+    ],
+    "profilePictureUrl": "url"
   },
   {
     "userId": "1",
-    "friendsList": [],
+    "friendsList": [
+      "2",
+      "3"
+    ],
     "firstName": "Ahmed",
     "lastName": "Soliman",
     "headline": "Junior Data Wrangling Engineer",
     "industry": "Software",
-    "skills": ["Python", "Java", "Software", "NLP"]
+    "skills": [
+      "Python",
+      "Java",
+      "Software",
+      "NLP"
+    ],
+    "profilePictureUrl": "url"
   },
   {
     "userId": "2",
@@ -51,7 +42,11 @@
     "lastName": "Bob",
     "headline": "Truck Driver",
     "industry": "Market",
-    "skills": ["License", "Driving Experience"]
+    "skills": [
+      "License",
+      "Driving Experience"
+    ],
+    "profilePictureUrl": "url"
   },
   {
     "userId": "3",
@@ -60,6 +55,7 @@
     "lastName": "Lopez",
     "headline": "Student",
     "industry": "N/A",
-    "skills": []
+    "skills": [],
+    "profilePictureUrl": "url"
   }
 ]
