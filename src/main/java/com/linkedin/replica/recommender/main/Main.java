@@ -25,8 +25,8 @@ public class Main {
         // create singleton instance of Configuration class that will hold configuration files paths
         Configuration.init(args[0], args[1], args[2], args[3], args[4]);
 
-        // create singleton instance of DatabaseConnection class that is responsible for intiating connections
-        // with databases
+        // create singleton instance of DatabaseConnection class that is responsible for intiating connection with databases
+
         DatabaseConnection.getInstance();
     }
 

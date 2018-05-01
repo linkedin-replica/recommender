@@ -1,6 +1,5 @@
 package com.linkedin.replica.recommender.commands.impl;
 
-import com.linkedin.replica.recommender.cache.handlers.RecommendationCacheHandler;
 import com.linkedin.replica.recommender.commands.Command;
 import com.linkedin.replica.recommender.models.User;
 import com.linkedin.replica.recommender.database.handlers.RecommendationDatabaseHandler;
@@ -10,7 +9,6 @@ import java.util.*;
 
 public class GetRecommendedUsersCommand extends Command {
     private RecommendationDatabaseHandler recommendationDatabaseHandler;
-    private RecommendationCacheHandler recommendationCacheHandler;
 
     public GetRecommendedUsersCommand(HashMap<String, Object> args) {
         super(args);
@@ -26,11 +24,7 @@ public class GetRecommendedUsersCommand extends Command {
         recommendationDatabaseHandler = (RecommendationDatabaseHandler) dbHandler;
         ArrayList<User> recommendedUsers = recommendationDatabaseHandler.getFriendsOfFriends(userId);
 
-        boolean toBeCached = (boolean) this.args.get("toBeCached");
-        if(toBeCached){
-            recommendationCacheHandler = (RecommendationCacheHandler) cacheHandler;
-            recommendationCacheHandler.saveRecommendedFriends(userId, recommendedUsers);
-        }
+
         return recommendedUsers;
     }
 

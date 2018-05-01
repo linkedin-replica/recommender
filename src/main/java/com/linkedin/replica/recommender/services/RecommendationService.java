@@ -1,6 +1,5 @@
 package com.linkedin.replica.recommender.services;
 
-import com.linkedin.replica.recommender.cache.handlers.CacheHandler;
 import com.linkedin.replica.recommender.commands.Command;
 import com.linkedin.replica.recommender.database.handlers.DatabaseHandler;
 import com.linkedin.replica.recommender.utils.Configuration;
@@ -9,7 +8,6 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 
 public class RecommendationService {
     private Configuration config;
@@ -27,10 +25,8 @@ public class RecommendationService {
         Class<?> CacheHandlerClass = config.getCacheHandlerClass(commandName);
 
         DatabaseHandler dbHandler = (DatabaseHandler) databaseHandlerClass.newInstance();
-        CacheHandler cacheHandler = (CacheHandler) CacheHandlerClass.newInstance();
 
         command.setDbHandler(dbHandler);
-        command.setCacheHandler(cacheHandler);
 
         return command.execute();
     }
