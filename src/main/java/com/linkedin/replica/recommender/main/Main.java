@@ -31,7 +31,7 @@ public class Main {
     }
 
     public static void start(String... args) throws FileNotFoundException, ClassNotFoundException, IOException, SQLException, InterruptedException, TimeoutException {
-        if (args.length != 4)
+        if (args.length != 5)
             throw new IllegalArgumentException("Expected three arguments. 1- app config file path \n "
                     + "2- database config file path \n  3- commands config file path \n 4- controller config file path");
 
@@ -62,7 +62,7 @@ public class Main {
     }
 
     public static void main(String[] args) throws FileNotFoundException, ClassNotFoundException, IOException, SQLException, InterruptedException, TimeoutException {
-        String[] arr = {"src/main/resources/config/app.config", "src/main/resources/config/arango.test.config",
+        String[] arr = {"src/main/resources/config/app.config", "src/main/resources/config/arango.config",
                 "src/main/resources/config/commands.config", "src/main/resources/config/redis.config",
                 "src/main/resources/config/controller.config"};
         start(arr);
