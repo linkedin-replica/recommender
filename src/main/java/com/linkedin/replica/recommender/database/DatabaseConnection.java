@@ -22,8 +22,8 @@ public class DatabaseConnection {
 
     private void initializeArangoDB() {
         arangoDriver = new ArangoDB.Builder()
-//                .user(config.getArangoConfig("arangodb.user"))
-//                .password(config.getArangoConfig("arangodb.password"))
+                .user(config.getArangoConfig("arangodb.user"))
+                .password(config.getArangoConfig("arangodb.password"))
                 .build();
     }
 

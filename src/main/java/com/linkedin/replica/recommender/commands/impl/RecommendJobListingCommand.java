@@ -1,6 +1,5 @@
 package com.linkedin.replica.recommender.commands.impl;
 
-import com.linkedin.replica.recommender.cache.handlers.RecommendationCacheHandler;
 import com.linkedin.replica.recommender.commands.Command;
 import com.linkedin.replica.recommender.database.handlers.RecommendationDatabaseHandler;
 import com.linkedin.replica.recommender.models.JobListing;
@@ -8,7 +7,6 @@ import com.linkedin.replica.recommender.models.JobListing;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 
 /**
  *  Implementation of RecommendJobListing command functionality.
@@ -17,7 +15,6 @@ import java.util.LinkedHashMap;
 public class RecommendJobListingCommand extends Command {
 
     private RecommendationDatabaseHandler recommendationDatabaseHandler;
-    private RecommendationCacheHandler recommendationCacheHandler;
 
     public RecommendJobListingCommand(HashMap<String, Object> args) {
         super(args);
@@ -31,12 +28,8 @@ public class RecommendJobListingCommand extends Command {
         recommendationDatabaseHandler = (RecommendationDatabaseHandler) dbHandler;
         // call dbHandler to get recommendedJobs and return results in the results map as key-value pair
         ArrayList<JobListing> jobListings = recommendationDatabaseHandler.getRecommendedJobListing(userId);
-        boolean toBeCached = (boolean) this.args.get("toBeCached");
 
-        if(toBeCached){
-            recommendationCacheHandler = (RecommendationCacheHandler) cacheHandler;
-            recommendationCacheHandler.saveRecommendedJobs(userId, jobListings);
-        }
+
         return jobListings;
     }
 }
