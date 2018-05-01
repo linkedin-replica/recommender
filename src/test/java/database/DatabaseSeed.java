@@ -41,6 +41,7 @@ public class DatabaseSeed {
         insertUsers();
         insertJobs();
         insertArticles();
+        insertCompanies();
     }
 
 
@@ -82,6 +83,7 @@ public class DatabaseSeed {
             userDocument.addAttribute("industry", userObject.get("industry"));
             userDocument.addAttribute("skills", userObject.get("skills"));
             userDocument.addAttribute("friendsList", userObject.get("friendsList"));
+            userDocument.addAttribute("profilePictureUrl", userObject.get("profilePictureUrl"));
             arangoDatabaseInstance.collection(collectionName).insertDocument(userDocument);
             System.out.println("New user document insert with key = " + userDocument.getId());
         }
@@ -111,12 +113,15 @@ public class DatabaseSeed {
             articleDocument = new BaseDocument();
             articleDocument.addAttribute("postId", articleObject.get("postId"));
             articleDocument.addAttribute("authorId", articleObject.get("authorId"));
-            articleDocument.addAttribute("headline", articleObject.get("headline"));
+            articleDocument.addAttribute("images", articleObject.get("images"));
             articleDocument.addAttribute("timestamp", articleObject.get("timestamp"));
             articleDocument.addAttribute("text", articleObject.get("text"));
-            articleDocument.addAttribute("likesCount", articleObject.get("likesCount"));
+            articleDocument.addAttribute("likers", articleObject.get("likers"));
             articleDocument.addAttribute("commentsCount", articleObject.get("commentsCount"));
-            articleDocument.addAttribute("shares", articleObject.get("shares"));
+            articleDocument.addAttribute("videos", articleObject.get("videos"));
+            articleDocument.addAttribute("isArticle", articleObject.get("isArticle"));
+            articleDocument.addAttribute("isCompanyPost", articleObject.get("isCompanyPost"));
+            articleDocument.addAttribute("title", articleObject.get("title"));
             arangoDatabaseInstance.collection(collectionName).insertDocument(articleDocument);
             System.out.println("New article document insert with key = " + articleDocument.getId());
         }
@@ -144,12 +149,46 @@ public class DatabaseSeed {
             JSONObject jobObject = (JSONObject) job;
             jobDocument = new BaseDocument();
             jobDocument.addAttribute("jobId", jobObject.get("jobId"));
-            jobDocument.addAttribute("positionName", jobObject.get("positionName"));
-            jobDocument.addAttribute("companyName", jobObject.get("companyName"));
             jobDocument.addAttribute("companyId", jobObject.get("companyId"));
             jobDocument.addAttribute("requiredSkills", jobObject.get("requiredSkills"));
+            jobDocument.addAttribute("industryType", jobObject.get("industryType"));
+            jobDocument.addAttribute("jobTitle", jobObject.get("jobTitle"));
+            jobDocument.addAttribute("jobBrief", jobObject.get("jobBrief"));
             arangoDatabaseInstance.collection(collectionName).insertDocument(jobDocument);
             System.out.println("New job document insert with key = " + jobDocument.getId());
+        }
+    }
+
+    /**
+     * Inserts compamies into database
+     *
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     * @throws ParseException
+     */
+    public static void insertCompanies() throws IOException, ClassNotFoundException, SQLException, ParseException {
+        String collectionName = config.getArangoConfig("collection.companies.name");
+        try {
+            arangoDatabaseInstance.createCollection(collectionName);
+
+        } catch (ArangoDBException exception) {
+            exception.printStackTrace();
+        }
+        BaseDocument companyDocument;
+        JSONArray companies = getJSONData("src/main/resources/data/companies.json");
+        for (Object company : companies) {
+            JSONObject companyObject = (JSONObject) company;
+            companyDocument = new BaseDocument();
+            companyDocument.addAttribute("companyId", companyObject.get("companyId"));
+            companyDocument.addAttribute("companyName", companyObject.get("companyName"));
+            companyDocument.addAttribute("userId", companyObject.get("userId"));
+            companyDocument.addAttribute("industryType", companyObject.get("industryType"));
+            companyDocument.addAttribute("aboutUs", companyObject.get("aboutUs"));
+            companyDocument.addAttribute("posts", companyObject.get("posts"));
+            companyDocument.addAttribute("profilePictureUrl", companyObject.get("profilePictureUrl"));
+            arangoDatabaseInstance.collection(collectionName).insertDocument(companyDocument);
+            System.out.println("New company document insert with key = " + companyDocument.getId());
         }
     }
 
