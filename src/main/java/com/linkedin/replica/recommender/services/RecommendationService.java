@@ -22,7 +22,6 @@ public class RecommendationService {
         Command command = (Command) constructor.newInstance(args);
 
         Class<?> databaseHandlerClass = config.getDatabaseHandlerClass(commandName);
-        Class<?> CacheHandlerClass = config.getCacheHandlerClass(commandName);
 
         DatabaseHandler dbHandler = (DatabaseHandler) databaseHandlerClass.newInstance();
 
